@@ -1,0 +1,445 @@
+unit Unit1;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ExtDlgs,
+  ExtCtrls, ComCtrls, Global, Math, VentanaConfig;
+
+type
+
+  { TForm1 }
+
+  TForm1 = class(TForm)
+    Image1: TImage;
+    ImageList1: TImageList;
+    MainMenu1: TMainMenu;
+    MenuItem1: TMenuItem;
+    Abrir: TMenuItem;
+    Logaritmico: TMenuItem;
+    FEscenciales: TMenuItem;
+    EscalaGris: TMenuItem;
+    Exponencial: TMenuItem;
+    FOscurecimiento: TMenuItem;
+    Coseno: TMenuItem;
+    ExpCreciente: TMenuItem;
+    FAclaOsc: TMenuItem;
+    Lineal: TMenuItem;
+    Correccion: TMenuItem;
+    FAltoContraste: TMenuItem;
+    FBajoContraste: TMenuItem;
+    FEscalaGrises: TMenuItem;
+    BinUmbral: TMenuItem;
+    BinIntensidad: TMenuItem;
+    IntervaloUmbral: TMenuItem;
+    IntervaloInvertido: TMenuItem;
+    SaveDialog1: TSaveDialog;
+    ToolButton3: TToolButton;
+    ToolButton5: TToolButton;
+    UmbralInvertido: TMenuItem;
+    UmbralGrises: TMenuItem;
+    SenoidalBajo: TMenuItem;
+    Polinomial: TMenuItem;
+    SenoidalAlto: TMenuItem;
+    Hiperbolica: TMenuItem;
+    Seno: TMenuItem;
+    Negativo: TMenuItem;
+    FAclarado: TMenuItem;
+    Guardar: TMenuItem;
+    BotonSalir: TMenuItem;
+    MenuItem4: TMenuItem;
+    OpenDialog1: TOpenDialog;
+    ScrollBox1: TScrollBox;
+    StatusBar1: TStatusBar;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
+    procedure AbrirClick(Sender: TObject);
+    procedure CorreccionClick(Sender: TObject);
+    procedure EscalaGrisClick(Sender: TObject);
+    procedure ExpCrecienteClick(Sender: TObject);
+    procedure ExponencialClick(Sender: TObject);
+    procedure FAclaOscClick(Sender: TObject);
+    procedure FAclaradoClick(Sender: TObject);
+    procedure FormClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure BotonSalirClick(Sender: TObject);
+    procedure GuardarClick(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
+    procedure Image1MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer
+      );
+    procedure LinealClick(Sender: TObject);
+    procedure LogaritmicoClick(Sender: TObject);
+    procedure MenuItem2Click(Sender: TObject);
+    procedure MenuItem3Click(Sender: TObject);
+    procedure MenuItem4Click(Sender: TObject);
+    procedure CosenoClick(Sender: TObject);
+    procedure NegativoClick(Sender: TObject);
+    procedure ScrollBox1Click(Sender: TObject);
+    procedure SenoClick(Sender: TObject);
+    procedure ToolBar1Click(Sender: TObject);
+    procedure ToolButton1Click(Sender: TObject);
+    procedure ToolButton2Click(Sender: TObject);
+  private
+
+  public
+
+  end;
+
+var
+  Form1: TForm1;
+  BM: TBitMap;
+
+implementation
+
+{$R *.lfm}
+
+{ TForm1 }
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.AbrirClick(Sender: TObject);
+var
+  fname : String;
+begin
+  if OpenDialog1.Execute() then
+  begin
+    BM := TBitmap.Create;
+    fname := OpenDialog1.FileName;
+    BM.LoadFromFile(fname);
+    Image1.Picture.Assign(BM);
+    Form1.Caption := fname;
+    StatusBar1.Panels[0].Text :=  IntToStr(BM.Width) + ' x ' +IntToStr(BM.Height) + ' píxeles';
+    MenuItem4.Enabled:=True;
+
+    // Crear espacio en memoria para la imagen
+    IM.alto := BM.Height;
+    IM.ancho := BM.Width;
+    SetLength(IM.M, IM.alto, IM.ancho, 3);
+
+    // Almacena el BitMap en la Matriz
+    bm2mat(BM, IM);
+  end;
+end;
+
+procedure TForm1.CorreccionClick(Sender: TObject);
+var
+  i, j: Integer;
+  //Poner Radio button para Decidir aclarar o oscurecer y barra para leer el valor alpha
+  //Alpha viene del formulario VentanaConfig
+begin
+  Form2.ShowModal;
+  for i:=0 to IM.alto-1 do
+  begin
+      for j:=0 to IM.ancho-1 do
+      begin
+          If Form2.CheckBox1.Checked then
+             IM.M[i][j][0] := round(Lambda * power( (IM.M[i][j][0] / Lambda ), alpha));
+          If Form2.CheckBox1.Checked then
+             IM.M[i][j][1] := round(Lambda * power( (IM.M[i][j][1] / Lambda ), alpha));
+          If Form2.Checkbox3.Checked then
+             IM.M[i][j][2] := round(Lambda * power( (IM.M[i][j][2] / Lambda ), alpha));
+      end;
+  end;
+  mat2bm(IM, BM);
+  Image1.Picture.Bitmap.Assign(BM);
+end;
+
+procedure TForm1.EscalaGrisClick(Sender: TObject);
+var
+  i,j: Integer;
+  gris: Double;
+begin
+     Form2.Label1.Visible:= False;
+     Form2.TrackBar1.Visible:= False;
+     Form2.ShowModal;
+     Form2.Label1.Visible:= True;
+     Form2.TrackBar1.Visible:= True;
+     for i:=0 to IM.alto-1 do
+     begin
+         for j:=0 to IM.ancho-1 do
+         begin
+              gris := (IM.M[i][j][0] + IM.M[i][j][1] + IM.M[i][j][2])/3.0;
+              If Form2.CheckBox1.Checked then
+                 IM.M[i][j][0] := round(gris);
+              If Form2.CheckBox2.Checked then
+                 IM.M[i][j][1] := round(gris);
+              If Form2.CheckBox3.Checked then
+                 IM.M[i][j][2] := round(gris);
+         end;
+     end;
+     mat2bm(IM, BM);
+     Image1.Picture.Bitmap.Assign(BM);
+end;
+
+procedure TForm1.ExpCrecienteClick(Sender: TObject);
+var
+  i,j: Integer;
+  aux: Double;
+  begin
+     Form2.TrackBar1.Max:= 500;
+     Form2.TrackBar1.Min:= 10;
+     Form2.ShowModal;
+     for i:=0 to IM.alto-1 do
+     begin
+         for j:=0 to IM.ancho-1 do
+         begin
+              //Valor de A...(Preguntar que es A (triangulo)
+              aux := Lambda/(power(e,alpha)-1);
+              If Form2.CheckBox1.Checked then
+                 IM.M[i][j][0] := round( aux * (power(e, alpha*(IM.M[i][j][0]/Lambda))-1));
+              If Form2.CheckBox2.Checked then
+                 IM.M[i][j][1] := round( aux * (power(e, alpha*(IM.M[i][j][1]/Lambda))-1));
+              If Form2.CheckBox3.Checked then
+                 IM.M[i][j][2] := round( aux * (power(e, alpha*(IM.M[i][j][2]/Lambda))-1));
+         end;
+     end;
+     mat2bm(IM, BM);
+     Image1.Picture.Bitmap.Assign(BM);
+end;
+
+procedure TForm1.ExponencialClick(Sender: TObject);
+var
+  i,j: Integer;
+  aux: Double;
+  begin
+     Form2.TrackBar1.Max:= 500;
+     Form2.TrackBar1.Min:= 10;
+     Form2.ShowModal;
+     for i:=0 to IM.alto-1 do
+     begin
+         for j:=0 to IM.ancho-1 do
+         begin
+              //Valor de A...(Preguntar que es A (triangulo)
+              If Form2.CheckBox1.Checked then
+                 aux := Lambda / (1-power(e, (-1)*alpha));
+                 IM.M[i][j][0] := round( aux * (1-power(e, (-1)*alpha*(IM.M[i][j][0]/Lambda ))));
+              If Form2.CheckBox2.Checked then
+                 aux := Lambda / (1-power(e, (-1)*alpha));
+                 IM.M[i][j][1] := round( aux * (1-power(e, (-1)*alpha*(IM.M[i][j][1]/Lambda ))));
+              If Form2.CheckBox3.Checked then
+                 aux := Lambda / (1-power(e, (-1)*alpha));
+                 IM.M[i][j][2] := round( aux * (1-power(e, (-1)*alpha*(IM.M[i][j][2]/Lambda ))));
+         end;
+     end;
+     mat2bm(IM, BM);
+     Image1.Picture.Bitmap.Assign(BM);
+end;
+
+procedure TForm1.FAclaOscClick(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.FAclaradoClick(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.FormClick(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.BotonSalirClick(Sender: TObject);
+begin
+  Form1.Close;
+  Form1.Destroy;
+end;
+
+procedure TForm1.GuardarClick(Sender: TObject);
+var
+  fname: String;
+begin
+  if SaveDialog1.Execute() then
+  begin
+    try
+      fname := SaveDialog1.FileName;
+      BM.SaveToFile(fname+'.bmp');
+      ShowMessage('Guardado exitosamente!');
+    except
+      begin
+      end;
+    end;
+  end;
+end;
+
+procedure TForm1.Image1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.Image1MouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  StatusBar1.Panels[1].Text:= IntToStr(X) + ' , '+IntToStr(Y);
+end;
+
+procedure TForm1.LinealClick(Sender: TObject);
+var
+  i, j: Integer;
+begin
+  Form2.TrackBar1.Max:=10000;
+  Form2.TrackBar1.Min:=5000;
+  Form2.ShowModal;
+  //Modificar para que funcione con aclarado y/u obscurecimiento
+  for i:=0 to IM.alto-1 do
+  begin
+      for j:=0 to IM.ancho-1 do
+      begin
+          If Form2.CheckBox1.Checked then
+             IM.M[i][j][0] := round( min( Lambda,IM.M[i][j][0] + alpha ));
+          If Form2.CheckBox2.Checked then
+             IM.M[i][j][1] := round( min( Lambda,IM.M[i][j][1] + alpha ));
+          If Form2.CheckBox3.Checked then
+             IM.M[i][j][2] := round( min( Lambda,IM.M[i][j][2] + alpha ));
+      end;
+  end;
+  mat2bm(IM, BM);
+  Image1.Picture.Bitmap.Assign(BM);
+end;
+
+procedure TForm1.LogaritmicoClick(Sender: TObject);
+var
+  i,j: Integer;
+  aux: Double;
+  //Revisar porque aclara igual con cualquier valor
+  begin
+     Form2.TrackBar1.Max:= 20000;
+     Form2.TrackBar1.Min:= 100;
+     Form2.ShowModal;
+     for i:=0 to IM.alto-1 do
+     begin
+         for j:=0 to IM.ancho-1 do
+         begin
+              //Valor de A...
+              aux := Lambda/(ln(alpha*Lambda+1));
+              If Form2.CheckBox1.Checked then
+                 IM.M[i][j][0] := round( aux*ln( alpha*IM.M[i][j][0] + 1 ));
+              If Form2.CheckBox2.Checked then
+                 IM.M[i][j][1] := round( aux*ln( alpha*IM.M[i][j][1] + 1 ));
+              If Form2.CheckBox3.Checked then
+                 IM.M[i][j][2] := round( aux*ln( alpha*IM.M[i][j][2] + 1 ));
+         end;
+     end;
+     mat2bm(IM, BM);
+     Image1.Picture.Bitmap.Assign(BM);
+end;
+
+procedure TForm1.MenuItem2Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.MenuItem3Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.MenuItem4Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.CosenoClick(Sender: TObject);
+var
+     i,j: Integer;
+begin
+     Form2.Label1.Visible:= false;
+     Form2.TrackBar1.Visible:= false;
+     Form2.ShowModal;
+     Form2.Label1.Visible:= True;
+     Form2.TrackBar1.Visible:= True;
+     for i:=0 to IM.alto-1 do
+     begin
+         for j:=0 to IM.ancho-1 do
+         begin
+              If Form2.CheckBox1.Checked then
+                 IM.M[i][j][0] := round( Lambda*(1-cos( (Pi*IM.M[i][j][0]) / (2*Lambda) )));
+              If Form2.CheckBox2.Checked then
+                 IM.M[i][j][1] := round( Lambda*(1-cos( (Pi*IM.M[i][j][1]) / (2*Lambda) )));
+              If Form2.CheckBox3.Checked then
+                 IM.M[i][j][2] := round( Lambda*(1-cos( (Pi*IM.M[i][j][2]) / (2*Lambda) )));
+         end;
+     end;
+     mat2bm(IM, BM);
+     Image1.Picture.Bitmap.Assign(BM);
+end;
+
+procedure TForm1.NegativoClick(Sender: TObject);
+var
+    i,j: Integer;
+  begin
+       Form2.Label1.Visible:= false;
+       Form2.TrackBar1.Visible:= false;
+       Form2.ShowModal;
+       Form2.Label1.Visible:= True;
+       Form2.TrackBar1.Visible:= True;
+       for i:=0 to IM.alto-1 do
+       begin
+           for j:=0 to IM.ancho-1 do
+           begin
+                If Form2.CheckBox1.Checked then
+                   IM.M[i][j][0] := Lambda - (IM.M[i][j][0]);
+                If Form2.CheckBox2.Checked then
+                   IM.M[i][j][1] := Lambda - (IM.M[i][j][1]);
+                If Form2.CheckBox3.Checked then
+                   IM.M[i][j][2] := Lambda - (IM.M[i][j][2]);
+           end;
+       end;
+       mat2bm(IM, BM);
+       Image1.Picture.Bitmap.Assign(BM);
+end;
+
+procedure TForm1.ScrollBox1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.SenoClick(Sender: TObject);
+var
+    i,j: Integer;
+  begin
+       Form2.Label1.Visible:= false;
+       Form2.TrackBar1.Visible:= false;
+       Form2.ShowModal;
+       Form2.Label1.Visible:= True;
+       Form2.TrackBar1.Visible:= True;
+       for i:=0 to IM.alto-1 do
+       begin
+           for j:=0 to IM.ancho-1 do
+           begin
+                If Form2.CheckBox1.Checked then
+                   IM.M[i][j][0] := round( Lambda*sin( (Pi*IM.M[i][j][0]) / (2*Lambda) ));
+                If Form2.CheckBox2.Checked then
+                   IM.M[i][j][1] := round( Lambda*sin( (Pi*IM.M[i][j][1]) / (2*Lambda) ));
+                If Form2.CheckBox3.Checked then
+                   IM.M[i][j][2] := round( Lambda*sin( (Pi*IM.M[i][j][2]) / (2*Lambda) ));
+           end;
+       end;
+       mat2bm(IM, BM);
+       Image1.Picture.Bitmap.Assign(BM);
+end;
+
+procedure TForm1.ToolBar1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.ToolButton1Click(Sender: TObject);
+begin
+     AbrirClick(Sender);
+end;
+
+procedure TForm1.ToolButton2Click(Sender: TObject);
+begin
+     GuardarClick(Sender);
+end;
+
+end.
+

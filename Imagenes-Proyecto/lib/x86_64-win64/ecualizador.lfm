@@ -1,0 +1,139 @@
+object Form4: TForm4
+  Left = 720
+  Height = 386
+  Top = 220
+  Width = 488
+  Caption = 'Form4'
+  ClientHeight = 386
+  ClientWidth = 488
+  LCLVersion = '2.0.2.0'
+  object TrackBar1: TTrackBar
+    Left = 104
+    Height = 49
+    Top = 40
+    Width = 344
+    Max = 127
+    Min = -127
+    OnChange = TrackBar1Change
+    Position = 0
+    Color = clNone
+    ParentColor = False
+    TabOrder = 0
+  end
+  object TrackBar2: TTrackBar
+    Left = 104
+    Height = 49
+    Top = 112
+    Width = 344
+    Max = 127
+    Min = -127
+    OnChange = TrackBar2Change
+    Position = 0
+    TabOrder = 1
+  end
+  object TrackBar3: TTrackBar
+    Left = 104
+    Height = 49
+    Top = 184
+    Width = 344
+    Max = 127
+    Min = -127
+    OnChange = TrackBar3Change
+    Position = 0
+    TabOrder = 2
+  end
+  object TrackBar4: TTrackBar
+    Left = 104
+    Height = 49
+    Top = 256
+    Width = 344
+    Max = 127
+    Min = -127
+    OnChange = TrackBar4Change
+    Position = 0
+    TabOrder = 3
+  end
+  object Label5: TLabel
+    Left = 272
+    Height = 17
+    Top = 232
+    Width = 8
+    Caption = '0'
+    ParentColor = False
+  end
+  object Label6: TLabel
+    Left = 272
+    Height = 17
+    Top = 160
+    Width = 8
+    Caption = '0'
+    ParentColor = False
+  end
+  object Label7: TLabel
+    Left = 272
+    Height = 17
+    Top = 88
+    Width = 8
+    Caption = '0'
+    ParentColor = False
+  end
+  object Label8: TLabel
+    Left = 272
+    Height = 17
+    Top = 16
+    Width = 8
+    Caption = '0'
+    ParentColor = False
+  end
+  object Aceptar: TButton
+    Left = 96
+    Height = 25
+    Top = 328
+    Width = 75
+    Caption = 'Aceptar'
+    OnClick = AceptarClick
+    TabOrder = 4
+  end
+  object Cancelar: TButton
+    Left = 304
+    Height = 25
+    Top = 328
+    Width = 75
+    Caption = 'Cancelar'
+    OnClick = CancelarClick
+    TabOrder = 5
+  end
+  object R: TCheckBox
+    Left = 40
+    Height = 23
+    Top = 64
+    Width = 35
+    Caption = 'R'
+    TabOrder = 6
+  end
+  object G: TCheckBox
+    Left = 40
+    Height = 23
+    Top = 136
+    Width = 36
+    Caption = 'G'
+    TabOrder = 7
+  end
+  object B: TCheckBox
+    Left = 40
+    Height = 23
+    Top = 208
+    Width = 35
+    Caption = 'B'
+    TabOrder = 8
+  end
+  object Intensidad: TCheckBox
+    Left = 8
+    Height = 23
+    Top = 272
+    Width = 97
+    Caption = 'Intensidad'
+    OnChange = IntensidadChange
+    TabOrder = 9
+  end
+end

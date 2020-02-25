@@ -1,0 +1,192 @@
+object Form3: TForm3
+  Left = 730
+  Height = 374
+  Top = 254
+  Width = 569
+  Caption = 'Form3'
+  ClientHeight = 374
+  ClientWidth = 569
+  LCLVersion = '2.0.2.0'
+  object Chart1: TChart
+    Left = 0
+    Height = 168
+    Top = 8
+    Width = 264
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Extent.UseXMax = True
+    Extent.UseXMin = True
+    Extent.UseYMax = True
+    Extent.UseYMin = True
+    Extent.XMax = 255
+    Extent.YMax = 255
+    ExtentSizeLimit.UseXMax = True
+    ExtentSizeLimit.UseXMin = True
+    ExtentSizeLimit.UseYMax = True
+    ExtentSizeLimit.UseYMin = True
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    object Chart1FuncSeries1: TFuncSeries
+      Shadow.Color = clRed
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.UseYMax = True
+      Extent.UseYMin = True
+      Extent.XMax = 255
+      Pen.Color = clRed
+      OnCalculate = Chart1FuncSeries1Calculate
+    end
+  end
+  object Chart2: TChart
+    Left = 288
+    Height = 168
+    Top = 8
+    Width = 264
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Extent.UseXMax = True
+    Extent.UseXMin = True
+    Extent.UseYMax = True
+    Extent.UseYMin = True
+    Extent.XMax = 255
+    Extent.YMax = 255
+    ExtentSizeLimit.UseXMax = True
+    ExtentSizeLimit.UseXMin = True
+    ExtentSizeLimit.UseYMax = True
+    ExtentSizeLimit.UseYMin = True
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    object Chart2FuncSeries1: TFuncSeries
+      Shadow.Color = clRed
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.UseYMax = True
+      Extent.UseYMin = True
+      Extent.XMax = 255
+      Pen.Color = clGreen
+      OnCalculate = Chart2FuncSeries1Calculate
+    end
+  end
+  object Chart3: TChart
+    Left = 0
+    Height = 168
+    Top = 192
+    Width = 264
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Extent.UseXMax = True
+    Extent.UseXMin = True
+    Extent.UseYMax = True
+    Extent.UseYMin = True
+    Extent.XMax = 255
+    Extent.YMax = 255
+    ExtentSizeLimit.UseXMax = True
+    ExtentSizeLimit.UseXMin = True
+    ExtentSizeLimit.UseYMax = True
+    ExtentSizeLimit.UseYMin = True
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    object Chart3FuncSeries1: TFuncSeries
+      Shadow.Color = clRed
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.UseYMax = True
+      Extent.UseYMin = True
+      Extent.XMax = 255
+      Pen.Color = clBlue
+      OnCalculate = Chart3FuncSeries1Calculate
+    end
+  end
+  object Chart4: TChart
+    Left = 288
+    Height = 168
+    Top = 192
+    Width = 264
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Extent.UseXMax = True
+    Extent.UseXMin = True
+    Extent.UseYMax = True
+    Extent.UseYMin = True
+    Extent.XMax = 255
+    Extent.YMax = 255
+    ExtentSizeLimit.UseXMax = True
+    ExtentSizeLimit.UseXMin = True
+    ExtentSizeLimit.UseYMax = True
+    ExtentSizeLimit.UseYMin = True
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    object Chart4FuncSeries1: TFuncSeries
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.UseYMax = True
+      Extent.UseYMin = True
+      Extent.XMax = 255
+      OnCalculate = Chart4FuncSeries1Calculate
+    end
+  end
+end
