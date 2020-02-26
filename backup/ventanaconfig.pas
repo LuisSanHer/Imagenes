@@ -88,9 +88,8 @@ begin
   alpha := (Form2.TrackBar1.Position/100.0);
   beta := (Form2.TrackBar2.Position/100.0);
   k := SpinEdit1.Value;
-  p := 0;
   if (RadioButton1.Checked) then
-     p := 1;
+     p := StrToInt(RadioButton1.Caption);
   if (RadioButton2.Checked) then
      p := 2;
   if (RadioButton3.Checked) then

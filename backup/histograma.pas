@@ -41,7 +41,7 @@ implementation
 
 { TForm3 }
 
-procedure TForm3.calcularH(M : MAT3D);
+procedure TForm3.calcularH();
 var i,j,maxR,maxG,maxB: Integer;
   iR, iB, iG: Byte;
 begin

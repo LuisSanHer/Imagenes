@@ -1,12 +1,12 @@
 object Form1: TForm1
-  Left = 393
-  Height = 637
-  Top = 79
-  Width = 485
+  Left = 603
+  Height = 616
+  Top = 303
+  Width = 502
   AllowDropFiles = True
   Caption = 'Ventana principal'
-  ClientHeight = 617
-  ClientWidth = 485
+  ClientHeight = 596
+  ClientWidth = 502
   Menu = MainMenu1
   OnClick = FormClick
   OnCreate = FormCreate
@@ -38,8 +38,8 @@ object Form1: TForm1
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
-    Top = 594
-    Width = 485
+    Top = 573
+    Width = 502
     Panels = <    
       item
         Width = 100
@@ -57,7 +57,7 @@ object Form1: TForm1
     Left = 0
     Height = 26
     Top = 0
-    Width = 485
+    Width = 502
     Caption = 'ToolBar1'
     Images = ImageList1
     ParentFont = False
@@ -255,12 +255,15 @@ object Form1: TForm1
         end
         object MediaArmonica: TMenuItem
           Caption = 'Media Armónica'
+          OnClick = MediaArmonicaClick
         end
         object MediaRecortada: TMenuItem
           Caption = 'Media Recortada'
+          OnClick = MediaRecortadaClick
         end
         object Mediana: TMenuItem
           Caption = 'Mediana'
+          OnClick = MedianaClick
         end
       end
       object DeteccionBordes: TMenuItem

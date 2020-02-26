@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ExtDlgs,
-  ExtCtrls, ComCtrls, Global, Math, VentanaConfig, Histograma, Ecualizador;
+  ExtCtrls, ComCtrls, StdCtrls, Global, Math, VentanaConfig, Histograma,
+  Ecualizador;
 
 type
 
@@ -109,8 +110,11 @@ type
     procedure EcualizacionClick(Sender: TObject);
     procedure MediaAritmeticaClick(Sender: TObject);
     procedure CosenoClick(Sender: TObject);
+    procedure MediaArmonicaClick(Sender: TObject);
     procedure MediaGeometricaClick(Sender: TObject);
+    procedure MedianaClick(Sender: TObject);
     procedure MediaPonderadaClick(Sender: TObject);
+    procedure MediaRecortadaClick(Sender: TObject);
     procedure NegativoClick(Sender: TObject);
     procedure PromedioDireccionalClick(Sender: TObject);
     procedure SepiaClick(Sender: TObject);
@@ -493,7 +497,7 @@ var
        begin
            for j:= 0 to k-1 do
            begin
-               MKxK [i][j] := (1/(2*Pi*varianza)) * (power( e,(-1)*(i*i + j*j)/(2*varianza) ));
+               MKxK [i][j] := (1.0/(2*Pi*varianza)) * (power( e,(-1)*( ( (k div 2)* (k div 2) + (k div 2)* (k div 2) )/(2*varianza)) ));
            end;
        end;
 
@@ -543,7 +547,7 @@ var
        begin
            for j:= 0 to k-1 do
            begin
-               MKxK [i][j] := (1/(2*Pi*varianza)) * (power( e,0-((i*i + j*j)/(2*varianza)) ));
+               MKxK [i][j] := (1.0/(2*Pi*varianza)) * (power( e,(-1)*( ( (k div 2)* (k div 2) + (k div 2)* (k div 2) )/(2*varianza)) ));
            end;
        end;
 
@@ -621,7 +625,7 @@ end;
 
 procedure TForm1.HistogramasClick(Sender: TObject);
 begin
-  Form3.calcularH(IM);
+  Form3.calcularH();
   Form3.ShowModal;
 end;
 
@@ -1002,9 +1006,7 @@ begin
      Form2.CheckBox3.Checked:= false;
 end;
 
-procedure TForm1.MediaGeometricaClick(Sender: TObject);
-var
-  i, j: Integer;
+procedure TForm1.MediaArmonicaClick(Sender: TObject);
   begin
        //ConfigurandoVentanaExterna
        Form2.Label1.Visible:= false;
@@ -1013,36 +1015,22 @@ var
        Form2.CheckBox2.Visible:= false;
        Form2.CheckBox3.Visible:= false;
        Form2.SpinEdit1.Visible:= true;
-       Form2.RadioButton2.Visible:= True;
-       Form2.RadioButton3.Caption:= '3';
-       Form2.RadioButton3.Visible:= True;
        Form2.Label3.Visible:= True;
-       Form2.Label4.Visible:= True;
        Form2.ShowModal;
+       Form2.SpinEdit1.Visible:= false;
        Form2.Label3.Visible:= false;
        Form2.Label1.Visible:= True;
        Form2.TrackBar1.Visible:= True;
        Form2.CheckBox1.Visible:= True;
        Form2.CheckBox2.Visible:= True;
        Form2.CheckBox3.Visible:= True;
-       Form2.RadioButton2.Visible:= false;
-       Form2.RadioButton3.Visible:= false;
-       Form2.RadioButton3.Caption:='4';
        //GuardarImagenAntesDeAplicarFiltro
        IMaux.alto := BM.Height;
        IMaux.ancho := BM.Width;
        SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
        bm2mat(BM,IMaux);
-       //Llenando matriz KxK
-       for i:= 0 to k-1 do
-       begin
-           for j:= 0 to k-1 do
-           begin
-               MKxK [i][j] := 1/(power(k,2)-1+p); //PREGUNTAR AUN NO ESTÁ HECHO
-           end;
-       end;
 
-       convolucion(IM,M2,(k div 2));
+       Armonica(IM, M2, (k div 2));
 
        mat2mat(M2,IM,(k div 2));
        mat2bm(IM, BM);
@@ -1058,6 +1046,62 @@ var
        Form2.RadioButton2.Checked:=false;
        Form2.RadioButton3.Checked:=false;
        Form2.RadioButton4.Checked:= false;
+
+end;
+
+procedure TForm1.MediaGeometricaClick(Sender: TObject);
+  begin
+       //ConfigurandoVentanaExterna
+       Form2.Label1.Visible:= false;
+       Form2.TrackBar1.Visible:= false;
+       Form2.CheckBox1.Visible:= false;
+       Form2.CheckBox2.Visible:= false;
+       Form2.CheckBox3.Visible:= false;
+       Form2.SpinEdit1.Visible:= true;
+       Form2.RadioButton2.Visible:= True;
+       Form2.RadioButton3.Caption:= '3';
+       Form2.RadioButton3.Visible:= True;
+       Form2.Label3.Visible:= True;
+       Form2.Label4.Visible:= True;
+       Form2.ShowModal;
+       Form2.Label4.Visible:= false;
+       Form2.SpinEdit1.Visible:= false;
+       Form2.Label3.Visible:= false;
+       Form2.Label1.Visible:= True;
+       Form2.TrackBar1.Visible:= True;
+       Form2.CheckBox1.Visible:= True;
+       Form2.CheckBox2.Visible:= True;
+       Form2.CheckBox3.Visible:= True;
+       Form2.RadioButton2.Visible:= false;
+       Form2.RadioButton3.Visible:= false;
+       Form2.RadioButton3.Caption:='4';
+       //GuardarImagenAntesDeAplicarFiltro
+       IMaux.alto := BM.Height;
+       IMaux.ancho := BM.Width;
+       SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+       bm2mat(BM,IMaux);
+
+       Geometrica(IM,M2,(k div 2), p);
+
+       mat2mat(M2,IM,(k div 2));
+       mat2bm(IM, BM);
+       Image1.Picture.Bitmap.Assign(BM);
+       //GuardarImagenConFiltroAplicado
+       IMaux2.alto := BM.Height;
+       IMaux2.ancho := BM.Width;
+       SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+       bm2mat(BM,IMaux2);
+       //Reiniciar Formulario Configuraciones
+       Form2.SpinEdit1.Value:=3;
+       Form2.RadioButton1.Checked:=false;
+       Form2.RadioButton2.Checked:=false;
+       Form2.RadioButton3.Checked:=false;
+       Form2.RadioButton4.Checked:= false;
+end;
+
+procedure TForm1.MedianaClick(Sender: TObject);
+begin
+
 end;
 
 procedure TForm1.MediaPonderadaClick(Sender: TObject);
@@ -1076,7 +1120,10 @@ var
        Form2.RadioButton3.Visible:= True;
        Form2.RadioButton4.Visible:= True;
        Form2.Label3.Visible:= True;
+       Form2.Label4.Visible:= True;
        Form2.ShowModal;
+       Form2.Label4.Visible:= false;
+       Form2.SpinEdit1.Visible:= false;
        Form2.Label3.Visible:= false;
        Form2.Label1.Visible:= True;
        Form2.TrackBar1.Visible:= True;
@@ -1118,6 +1165,11 @@ var
        Form2.RadioButton2.Checked:=false;
        Form2.RadioButton3.Checked:=false;
        Form2.RadioButton4.Checked:= false;
+end;
+
+procedure TForm1.MediaRecortadaClick(Sender: TObject);
+begin
+
 end;
 
 procedure TForm1.NegativoClick(Sender: TObject);

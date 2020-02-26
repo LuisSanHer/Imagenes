@@ -6,7 +6,7 @@ object Form3: TForm3
   Caption = 'Form3'
   ClientHeight = 374
   ClientWidth = 569
-  LCLVersion = '2.0.2.0'
+  LCLVersion = '2.0.6.0'
   object Chart1: TChart
     Left = 0
     Height = 168

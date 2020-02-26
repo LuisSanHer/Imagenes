@@ -89,13 +89,13 @@ begin
   beta := (Form2.TrackBar2.Position/100.0);
   k := SpinEdit1.Value;
   if (RadioButton1.Checked) then
-     p := 1;
+     p := StrToInt(RadioButton1.Caption);
   if (RadioButton2.Checked) then
-     p := 2;
+     p := StrToInt(RadioButton2.Caption);
   if (RadioButton3.Checked) then
-     p := 4;
+     p := StrToInt(RadioButton3.Caption);
   if (RadioButton4.Checked) then
-     p := 12;
+     p := StrToInt(RadioButton4.Caption);
   Form2.Close;
 end;
 
