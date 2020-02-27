@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ExtDlgs,
   ExtCtrls, ComCtrls, StdCtrls, Global, Math, VentanaConfig, Histograma,
-  Ecualizador;
+  Ecualizador, deteccionbordesconfig;
 
 type
 
@@ -55,6 +55,7 @@ type
     FiltrosSegundaDerivada: TMenuItem;
     GaussianaFuerte: TMenuItem;
     GaussianaDebil: TMenuItem;
+    FiltroPrewitt: TMenuItem;
     OperadorLapGaussiana: TMenuItem;
     OperadorLaplaciano: TMenuItem;
     PromedioDireccional: TMenuItem;
@@ -91,6 +92,11 @@ type
     procedure ExponencialClick(Sender: TObject);
     procedure FAclaOscClick(Sender: TObject);
     procedure FAclaradoClick(Sender: TObject);
+    procedure FiltroFreiChenClick(Sender: TObject);
+    procedure FiltroKirschClick(Sender: TObject);
+    procedure FiltroPrewittClick(Sender: TObject);
+    procedure FiltroRobertsClick(Sender: TObject);
+    procedure FiltroSobelClick(Sender: TObject);
     procedure FormClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure BotonSalirClick(Sender: TObject);
@@ -116,6 +122,8 @@ type
     procedure MediaPonderadaClick(Sender: TObject);
     procedure MediaRecortadaClick(Sender: TObject);
     procedure NegativoClick(Sender: TObject);
+    procedure OperadorLapGaussianaClick(Sender: TObject);
+    procedure OperadorLaplacianoClick(Sender: TObject);
     procedure PromedioDireccionalClick(Sender: TObject);
     procedure SepiaClick(Sender: TObject);
     procedure PolinomialClick(Sender: TObject);
@@ -452,6 +460,607 @@ end;
 procedure TForm1.FAclaradoClick(Sender: TObject);
 begin
 
+end;
+
+procedure TForm1.FiltroFreiChenClick(Sender: TObject);
+var
+  i,j: Integer;
+  gris: Double;
+begin
+     //ConfigurandoVentanaExterna
+     Form5.ShowModal;
+     //GuardarImagenAntesDeAplicarFiltro
+     IMaux.alto := BM.Height;
+     IMaux.ancho := BM.Width;
+     SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+     bm2mat(BM,IMaux);
+     //Aplicando escala de grises
+     for i:=0 to IM.alto-1 do
+     begin
+         for j:=0 to IM.ancho-1 do
+         begin
+              gris := (IM.M[i][j][0] + IM.M[i][j][1] + IM.M[i][j][2])/3.0;
+              IM.M[i][j][0] := round(gris);
+              IM.M[i][j][1] := round(gris);
+              IM.M[i][j][2] := round(gris);
+         end;
+     end;
+     //Llenando matriz KxK
+     k := 3;
+     //MKxK para horizontal
+     if (Form5.RadioButton1.Checked) then
+     begin
+       MkxK[0][0]:=  1; MkxK[0][1]:=  power(2, 0.5); MkxK[0][2]:=  1;
+       MkxK[1][0]:=  0; MkxK[1][1]:=  0; MkxK[1][2]:=  0;
+       MkxK[2][0]:= -1; MkxK[2][1]:=  (-1)*power(2, 0.5); MkxK[2][2]:= -1;
+       for i:=0 to k-1 do
+       begin
+            for j:=0 to k-1 do
+            begin
+                MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+                MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+                MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+            end;
+       end;
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para vertical
+     if (Form5.RadioButton2.Checked) then
+     begin
+       MkxK[0][0]:= 1; MkxK[0][1]:= 0; MkxK[0][2]:= -1;
+       MkxK[1][0]:= power(2, 0.5); MkxK[1][1]:=  0; MkxK[1][2]:= (-1)*power(2, 0.5);
+       MkxK[2][0]:= 1; MkxK[2][1]:= 0; MkxK[2][2]:= -1;
+       for i:=0 to k-1 do
+       begin
+            for j:=0 to k-1 do
+            begin
+                MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+                MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+                MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+            end;
+       end;
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para 45°
+     if (Form5.RadioButton3.Checked) then
+     begin
+       MkxK[0][0]:=  power(2, 0.5); MkxK[0][1]:= -1; MkxK[0][2]:= 0;
+       MkxK[1][0]:= -1; MkxK[1][1]:= 0; MkxK[1][2]:=  1;
+       MkxK[2][0]:=  0; MkxK[2][1]:= 1; MkxK[2][2]:= (-1)*power(2, 0.5);
+       for i:=0 to k-1 do
+       begin
+            for j:=0 to k-1 do
+            begin
+                MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+                MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+                MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+            end;
+       end;
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para -45°
+     if (Form5.RadioButton4.Checked) then
+     begin
+       MkxK[0][0]:= 0; MkxK[0][1]:= -1; MkxK[0][2]:= power(2, 0.5);
+       MkxK[1][0]:= 1; MkxK[1][1]:=  0; MkxK[1][2]:= -1;
+       MkxK[2][0]:= (-1)*power(2, 0.5); MkxK[2][1]:=  1; MkxK[2][2]:=  0;
+       for i:=0 to k-1 do
+       begin
+            for j:=0 to k-1 do
+            begin
+                 MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+                 MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+                 MKxK[i][j]:= MkxK[i][j] * 1.0/2*power(2,0.5);
+            end;
+       end;
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para Completo
+     if (Form5.RadioButton5.Checked) then
+     begin
+       MkxKD1[0][0]:=  1; MkxKD1[0][1]:=  power(2, 0.5); MkxKD1[0][2]:=  1;
+       MkxKD1[1][0]:=  0; MkxKD1[1][1]:=  0; MkxKD1[1][2]:=  0;
+       MkxKD1[2][0]:= -1; MkxKD1[2][1]:=  (-1)*power(2, 0.5); MkxKD1[2][2]:= -1;
+
+       MkxKD2[0][0]:= 1; MkxKD2[0][1]:= 0; MkxKD2[0][2]:= -1;
+       MkxKD2[1][0]:= power(2, 0.5); MkxKD2[1][1]:=  0; MkxKD2[1][2]:= (-1)*power(2, 0.5);
+       MkxKD2[2][0]:= 1; MkxKD2[2][1]:= 0; MkxKD2[2][2]:= -1;
+
+       MkxKD3[0][0]:=  power(2, 0.5); MkxKD3[0][1]:= -1; MkxKD3[0][2]:= 0;
+       MkxKD3[1][0]:= -1; MkxKD3[1][1]:= 0; MkxKD3[1][2]:=  1;
+       MkxKD3[2][0]:=  0; MkxKD3[2][1]:= 1; MkxKD3[2][2]:= (-1)*power(2, 0.5);
+
+       MkxKD4[0][0]:= 0; MkxKD4[0][1]:= -1; MkxKD4[0][2]:= power(2, 0.5);
+       MkxKD4[1][0]:= 1; MkxKD4[1][1]:=  0; MkxKD4[1][2]:= -1;
+       MkxKD4[2][0]:= (-1)*power(2, 0.5); MkxKD4[2][1]:=  1; MkxKD4[2][2]:=  0;
+       for i:=0 to k-1 do
+       begin
+            for j:=0 to k-1 do
+            begin
+                 MKxKD1[i][j]:= MkxKD1[i][j] * 1.0/2*power(2,0.5);
+                 MKxKD2[i][j]:= MkxKD2[i][j] * 1.0/2*power(2,0.5);
+                 MKxKD3[i][j]:= MkxKD3[i][j] * 1.0/2*power(2,0.5);
+                 MKxKD4[i][j]:= MkxKD4[i][j] * 1.0/2*power(2,0.5);
+            end;
+       end;
+       convolucionBordes(IM,M2);
+     end;
+     mat2mat(M2,IM,(k div 2));
+     mat2bm(IM, BM);
+     Image1.Picture.Bitmap.Assign(BM);
+     //GuardarImagenConFiltroAplicado
+     IMaux2.alto := BM.Height;
+     IMaux2.ancho := BM.Width;
+     SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+     bm2mat(BM,IMaux2);
+     //Reiniciando Formulario
+     Form5.RadioButton1.Checked:= false;
+     Form5.RadioButton2.Checked:= false;
+     Form5.RadioButton3.Checked:= false;
+     Form5.RadioButton4.Checked:= false;
+     Form5.RadioButton5.Checked:= false;
+end;
+
+procedure TForm1.FiltroKirschClick(Sender: TObject);
+var
+  i,j: Integer;
+  gris: Double;
+begin
+     //ConfigurandoVentanaExterna
+     Form5.RadioButton6.Visible:= true;
+     Form5.RadioButton7.Visible:= true;
+     Form5.RadioButton8.Visible:= true;
+     Form5.RadioButton9.Visible:= true;
+     Form5.RadioButton1.Caption:= '0°';
+     Form5.RadioButton2.Caption:= '45°';
+     Form5.RadioButton3.Caption:= '90°';
+     Form5.RadioButton4.Caption:= '135°';
+     Form5.RadioButton5.Caption:= '180°';
+     Form5.ShowModal;
+     Form5.RadioButton1.Caption:= 'Horizontal';
+     Form5.RadioButton2.Caption:= 'Vertical';
+     Form5.RadioButton3.Caption:= '45°';
+     Form5.RadioButton4.Caption:= '-45°';
+     Form5.RadioButton5.Caption:= 'Completo';
+     Form5.RadioButton6.Visible:= false;
+     Form5.RadioButton7.Visible:= false;
+     Form5.RadioButton8.Visible:= false;
+     Form5.RadioButton9.Visible:= false;
+     //GuardarImagenAntesDeAplicarFiltro
+     IMaux.alto := BM.Height;
+     IMaux.ancho := BM.Width;
+     SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+     bm2mat(BM,IMaux);
+     //Aplicando escala de grises
+     for i:=0 to IM.alto-1 do
+     begin
+         for j:=0 to IM.ancho-1 do
+         begin
+              gris := (IM.M[i][j][0] + IM.M[i][j][1] + IM.M[i][j][2])/3.0;
+              IM.M[i][j][0] := round(gris);
+              IM.M[i][j][1] := round(gris);
+              IM.M[i][j][2] := round(gris);
+         end;
+     end;
+     //Llenando matriz KxK
+     k := 3;
+     //MKxK para 0°
+     if (Form5.RadioButton1.Checked) then
+     begin
+       MkxK[0][0]:= -3; MkxK[0][1]:= -3; MkxK[0][2]:= 5;
+       MkxK[1][0]:= -3; MkxK[1][1]:=  0; MkxK[1][2]:= 5;
+       MkxK[2][0]:= -3; MkxK[2][1]:= -3; MkxK[2][2]:= 5;
+
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para 45°
+     if (Form5.RadioButton2.Checked) then
+     begin
+       MkxK[0][0]:= -3; MkxK[0][1]:=  5; MkxK[0][2]:=  5;
+       MkxK[1][0]:= -3; MkxK[1][1]:=  0; MkxK[1][2]:=  5;
+       MkxK[2][0]:= -3; MkxK[2][1]:= -3; MkxK[2][2]:= -3;
+
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para 90°
+     if (Form5.RadioButton3.Checked) then
+     begin
+       MkxK[0][0]:=  5; MkxK[0][1]:=  5; MkxK[0][2]:=  5;
+       MkxK[1][0]:= -3; MkxK[1][1]:=  0; MkxK[1][2]:= -3;
+       MkxK[2][0]:= -3; MkxK[2][1]:= -3; MkxK[2][2]:= -3;
+
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para 135°
+     if (Form5.RadioButton4.Checked) then
+     begin
+       MkxK[0][0]:=  5; MkxK[0][1]:=  5; MkxK[0][2]:= -3;
+       MkxK[1][0]:=  5; MkxK[1][1]:=  0; MkxK[1][2]:= -3;
+       MkxK[2][0]:= -3; MkxK[2][1]:= -3; MkxK[2][2]:= -3;
+
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para 180°
+     if (Form5.RadioButton5.Checked) then
+     begin
+       MkxK[0][0]:= 5; MkxK[0][1]:= -3; MkxK[0][2]:= -3;
+       MkxK[1][0]:= 5; MkxK[1][1]:=  0; MkxK[1][2]:= -3;
+       MkxK[2][0]:= 5; MkxK[2][1]:= -3; MkxK[2][2]:= -3;
+
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para 225°
+     if (Form5.RadioButton6.Checked) then
+     begin
+       MkxK[0][0]:= -3; MkxK[0][1]:= -3; MkxK[0][2]:= -3;
+       MkxK[1][0]:=  5; MkxK[1][1]:=  0; MkxK[1][2]:= -3;
+       MkxK[2][0]:=  5; MkxK[2][1]:=  5; MkxK[2][2]:= -3;
+
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para 270°
+     if (Form5.RadioButton7.Checked) then
+     begin
+       MkxK[0][0]:= -3; MkxK[0][1]:= -3; MkxK[0][2]:= -3;
+       MkxK[1][0]:= -3; MkxK[1][1]:=  0; MkxK[1][2]:= -3;
+       MkxK[2][0]:=  5; MkxK[2][1]:=  5; MkxK[2][2]:=  5;
+
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para 315°
+     if (Form5.RadioButton8.Checked) then
+     begin
+       MkxK[0][0]:= -3; MkxK[0][1]:= -3; MkxK[0][2]:= -3;
+       MkxK[1][0]:= -3; MkxK[1][1]:=  0; MkxK[1][2]:=  5;
+       MkxK[2][0]:= -3; MkxK[2][1]:=  5; MkxK[2][2]:=  5;
+
+       convolucion(IM,M2,(k div 2));
+     end;
+     //MKxK para Completo
+     if (Form5.RadioButton9.Checked) then
+     begin
+       MkxKD1[0][0]:= -3; MkxKD1[0][1]:= -3; MkxKD1[0][2]:= 5;
+       MkxKD1[1][0]:= -3; MkxKD1[1][1]:=  0; MkxKD1[1][2]:= 5;
+       MkxKD1[2][0]:= -3; MkxKD1[2][1]:= -3; MkxKD1[2][2]:= 5;
+
+       MkxKD2[0][0]:= -3; MkxKD2[0][1]:=  5; MkxKD2[0][2]:=  5;
+       MkxKD2[1][0]:= -3; MkxKD2[1][1]:=  0; MkxKD2[1][2]:=  5;
+       MkxKD2[2][0]:= -3; MkxKD2[2][1]:= -3; MkxKD2[2][2]:= -3;
+
+       MkxKD3[0][0]:=  5; MkxKD3[0][1]:=  5; MkxKD3[0][2]:=  5;
+       MkxKD3[1][0]:= -3; MkxKD3[1][1]:=  0; MkxKD3[1][2]:= -3;
+       MkxKD3[2][0]:= -3; MkxKD3[2][1]:= -3; MkxKD3[2][2]:= -3;
+
+       MkxKD4[0][0]:=  5; MkxKD4[0][1]:=  5; MkxKD4[0][2]:= -3;
+       MkxKD4[1][0]:=  5; MkxKD4[1][1]:=  0; MkxKD4[1][2]:= -3;
+       MkxKD4[2][0]:= -3; MkxKD4[2][1]:= -3; MkxKD4[2][2]:= -3;
+
+       MkxKD5[0][0]:= 5; MkxKD5[0][1]:= -3; MkxKD5[0][2]:= -3;
+       MkxKD5[1][0]:= 5; MkxKD5[1][1]:=  0; MkxKD5[1][2]:= -3;
+       MkxKD5[2][0]:= 5; MkxKD5[2][1]:= -3; MkxKD5[2][2]:= -3;
+
+       MkxKD6[0][0]:= -3; MkxKD6[0][1]:= -3; MkxKD6[0][2]:= -3;
+       MkxKD6[1][0]:=  5; MkxKD6[1][1]:=  0; MkxKD6[1][2]:= -3;
+       MkxKD6[2][0]:=  5; MkxKD6[2][1]:=  5; MkxKD6[2][2]:= -3;
+
+       MkxKD7[0][0]:= -3; MkxKD7[0][1]:= -3; MkxKD7[0][2]:= -3;
+       MkxKD7[1][0]:= -3; MkxKD7[1][1]:=  0; MkxKD7[1][2]:= -3;
+       MkxKD7[2][0]:=  5; MkxKD7[2][1]:=  5; MkxKD7[2][2]:=  5;
+
+       convolucionBordesKirsch(IM,M2);
+     end;
+     mat2mat(M2,IM,(k div 2));
+     mat2bm(IM, BM);
+     Image1.Picture.Bitmap.Assign(BM);
+     //GuardarImagenConFiltroAplicado
+     IMaux2.alto := BM.Height;
+     IMaux2.ancho := BM.Width;
+     SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+     bm2mat(BM,IMaux2);
+     //Reiniciando Formulario
+     Form5.RadioButton1.Checked:= false;
+     Form5.RadioButton2.Checked:= false;
+     Form5.RadioButton3.Checked:= false;
+     Form5.RadioButton4.Checked:= false;
+     Form5.RadioButton5.Checked:= false;
+     Form5.RadioButton6.Checked:= false;
+     Form5.RadioButton7.Checked:= false;
+     Form5.RadioButton8.Checked:= false;
+     Form5.RadioButton9.Checked:= false;
+end;
+
+procedure TForm1.FiltroPrewittClick(Sender: TObject);
+var
+  i,j: Integer;
+  gris: Double;
+  begin
+       //ConfigurandoVentanaExterna
+       Form5.ShowModal;
+       //GuardarImagenAntesDeAplicarFiltro
+       IMaux.alto := BM.Height;
+       IMaux.ancho := BM.Width;
+       SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+       bm2mat(BM,IMaux);
+       //Aplicando escala de grises
+       for i:=0 to IM.alto-1 do
+       begin
+           for j:=0 to IM.ancho-1 do
+           begin
+                gris := (IM.M[i][j][0] + IM.M[i][j][1] + IM.M[i][j][2])/3.0;
+                IM.M[i][j][0] := round(gris);
+                IM.M[i][j][1] := round(gris);
+                IM.M[i][j][2] := round(gris);
+           end;
+       end;
+       //Llenando matriz KxK
+       k := 3;
+       //MKxK para horizontal
+       if (Form5.RadioButton1.Checked) then
+       begin
+         MkxK[0][0]:= -1; MkxK[0][1]:=0; MkxK[0][2]:=1;
+         MkxK[1][0]:= -1; MkxK[1][1]:=0; MkxK[1][2]:=1;
+         MkxK[2][0]:= -1; MkxK[2][1]:=0; MkxK[2][2]:=1;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para vertical
+       if (Form5.RadioButton2.Checked) then
+       begin
+         MkxK[0][0]:= -1; MkxK[0][1]:=-1; MkxK[0][2]:=-1;
+         MkxK[1][0]:=  0; MkxK[1][1]:= 0; MkxK[1][2]:= 0;
+         MkxK[2][0]:=  1; MkxK[2][1]:= 1; MkxK[2][2]:= 1;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para 45°
+       if (Form5.RadioButton3.Checked) then
+       begin
+         MkxK[0][0]:=  0; MkxK[0][1]:= 1; MkxK[0][2]:= 1;
+         MkxK[1][0]:= -1; MkxK[1][1]:= 0; MkxK[1][2]:= 1;
+         MkxK[2][0]:= -1; MkxK[2][1]:=-1; MkxK[2][2]:= 0;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para -45°
+       if (Form5.RadioButton4.Checked) then
+       begin
+         MkxK[0][0]:= -1; MkxK[0][1]:=-1; MkxK[0][2]:=0;
+         MkxK[1][0]:= -1; MkxK[1][1]:= 0; MkxK[1][2]:=1;
+         MkxK[2][0]:=  0; MkxK[2][1]:= 1; MkxK[2][2]:=1;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para Completo
+       if (Form5.RadioButton5.Checked) then
+       begin
+         MkxKD1[0][0]:= -1; MkxKD1[0][1]:=0; MkxKD1[0][2]:=1;
+         MkxKD1[1][0]:= -1; MkxKD1[1][1]:=0; MkxKD1[1][2]:=1;
+         MkxKD1[2][0]:= -1; MkxKD1[2][1]:=0; MkxKD1[2][2]:=1;
+
+         MkxKD2[0][0]:= -1; MkxKD2[0][1]:=-1; MkxKD2[0][2]:=-1;
+         MkxKD2[1][0]:=  0; MkxKD2[1][1]:= 0; MkxKD2[1][2]:= 0;
+         MkxKD2[2][0]:=  1; MkxKD2[2][1]:= 1; MkxKD2[2][2]:= 1;
+
+         MkxKD3[0][0]:=  0; MkxKD3[0][1]:= 1; MkxKD3[0][2]:= 1;
+         MkxKD3[1][0]:= -1; MkxKD3[1][1]:= 0; MkxKD3[1][2]:= 1;
+         MkxKD3[2][0]:= -1; MkxKD3[2][1]:=-1; MkxKD3[2][2]:= 0;
+
+         MkxKD4[0][0]:= -1; MkxKD4[0][1]:=-1; MkxKD4[0][2]:=0;
+         MkxKD4[1][0]:= -1; MkxKD4[1][1]:= 0; MkxKD4[1][2]:=1;
+         MkxKD4[2][0]:=  0; MkxKD4[2][1]:= 1; MkxKD4[2][2]:=1;
+
+         convolucionBordes(IM,M2);
+       end;
+       mat2mat(M2,IM,(k div 2));
+       mat2bm(IM, BM);
+       Image1.Picture.Bitmap.Assign(BM);
+       //GuardarImagenConFiltroAplicado
+       IMaux2.alto := BM.Height;
+       IMaux2.ancho := BM.Width;
+       SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+       bm2mat(BM,IMaux2);
+       //Reiniciando Formulario
+       Form5.RadioButton1.Checked:= false;
+       Form5.RadioButton2.Checked:= false;
+       Form5.RadioButton3.Checked:= false;
+       Form5.RadioButton4.Checked:= false;
+       Form5.RadioButton5.Checked:= false;
+end;
+
+procedure TForm1.FiltroRobertsClick(Sender: TObject);
+var
+  i,j: Integer;
+  gris: Double;
+  begin
+       //ConfigurandoVentanaExterna
+       Form5.ShowModal;
+       //GuardarImagenAntesDeAplicarFiltro
+       IMaux.alto := BM.Height;
+       IMaux.ancho := BM.Width;
+       SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+       bm2mat(BM,IMaux);
+       //Aplicando escala de grises
+       for i:=0 to IM.alto-1 do
+       begin
+           for j:=0 to IM.ancho-1 do
+           begin
+                gris := (IM.M[i][j][0] + IM.M[i][j][1] + IM.M[i][j][2])/3.0;
+                IM.M[i][j][0] := round(gris);
+                IM.M[i][j][1] := round(gris);
+                IM.M[i][j][2] := round(gris);
+           end;
+       end;
+       //Llenando matriz KxK
+       k := 3;
+       //MKxK para horizontal
+       if (Form5.RadioButton1.Checked) then
+       begin
+         MkxK[0][0]:= -1; MkxK[0][1]:=0; MkxK[0][2]:=0;
+         MkxK[1][0]:=  1; MkxK[1][1]:=0; MkxK[1][2]:=0;
+         MkxK[2][0]:=  0; MkxK[2][1]:=0; MkxK[2][2]:=0;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para vertical
+       if (Form5.RadioButton2.Checked) then
+       begin
+         MkxK[0][0]:= -1; MkxK[0][1]:= 1; MkxK[0][2]:= 0;
+         MkxK[1][0]:=  0; MkxK[1][1]:= 0; MkxK[1][2]:= 0;
+         MkxK[2][0]:=  0; MkxK[2][1]:= 0; MkxK[2][2]:= 0;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para 45°
+       if (Form5.RadioButton3.Checked) then
+       begin
+         MkxK[0][0]:=  0; MkxK[0][1]:= -1; MkxK[0][2]:= 0;
+         MkxK[1][0]:=  1; MkxK[1][1]:=  0; MkxK[1][2]:= 0;
+         MkxK[2][0]:=  0; MkxK[2][1]:=  0; MkxK[2][2]:= 0;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para -45°
+       if (Form5.RadioButton4.Checked) then
+       begin
+         MkxK[0][0]:= -1; MkxK[0][1]:= 0; MkxK[0][2]:=0;
+         MkxK[1][0]:=  0; MkxK[1][1]:= 1; MkxK[1][2]:=0;
+         MkxK[2][0]:=  0; MkxK[2][1]:= 0; MkxK[2][2]:=0;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para Completo
+       if (Form5.RadioButton5.Checked) then
+       begin
+         MkxKD1[0][0]:= -1; MkxKD1[0][1]:=0; MkxKD1[0][2]:=0;
+         MkxKD1[1][0]:=  1; MkxKD1[1][1]:=0; MkxKD1[1][2]:=0;
+         MkxKD1[2][0]:=  0; MkxKD1[2][1]:=0; MkxKD1[2][2]:=0;
+
+         MkxKD2[0][0]:= -1; MkxKD2[0][1]:= 1; MkxKD2[0][2]:= 0;
+         MkxKD2[1][0]:=  0; MkxKD2[1][1]:= 0; MkxKD2[1][2]:= 0;
+         MkxKD2[2][0]:=  0; MkxKD2[2][1]:= 0; MkxKD2[2][2]:= 0;
+
+         MkxKD3[0][0]:=  0; MkxKD3[0][1]:= -1; MkxKD3[0][2]:= 0;
+         MkxKD3[1][0]:=  1; MkxKD3[1][1]:=  0; MkxKD3[1][2]:= 0;
+         MkxKD3[2][0]:=  0; MkxKD3[2][1]:=  0; MkxKD3[2][2]:= 0;
+
+         MkxKD4[0][0]:= -1; MkxKD4[0][1]:= 0; MkxKD4[0][2]:=0;
+         MkxKD4[1][0]:=  0; MkxKD4[1][1]:= 1; MkxKD4[1][2]:=0;
+         MkxKD4[2][0]:=  0; MkxKD4[2][1]:= 0; MkxKD4[2][2]:=0;
+
+         convolucionBordes(IM,M2);
+       end;
+       mat2mat(M2,IM,(k div 2));
+       mat2bm(IM, BM);
+       Image1.Picture.Bitmap.Assign(BM);
+       //GuardarImagenConFiltroAplicado
+       IMaux2.alto := BM.Height;
+       IMaux2.ancho := BM.Width;
+       SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+       bm2mat(BM,IMaux2);
+       //Reiniciando Formulario
+       Form5.RadioButton1.Checked:= false;
+       Form5.RadioButton2.Checked:= false;
+       Form5.RadioButton3.Checked:= false;
+       Form5.RadioButton4.Checked:= false;
+       Form5.RadioButton5.Checked:= false;
+end;
+
+procedure TForm1.FiltroSobelClick(Sender: TObject);
+var
+  i,j: Integer;
+  gris: Double;
+  begin
+       //ConfigurandoVentanaExterna
+       Form5.ShowModal;
+       //GuardarImagenAntesDeAplicarFiltro
+       IMaux.alto := BM.Height;
+       IMaux.ancho := BM.Width;
+       SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+       bm2mat(BM,IMaux);
+       //Aplicando escala de grises
+       for i:=0 to IM.alto-1 do
+       begin
+           for j:=0 to IM.ancho-1 do
+           begin
+                gris := (IM.M[i][j][0] + IM.M[i][j][1] + IM.M[i][j][2])/3.0;
+                IM.M[i][j][0] := round(gris);
+                IM.M[i][j][1] := round(gris);
+                IM.M[i][j][2] := round(gris);
+           end;
+       end;
+       //Llenando matriz KxK
+       k := 3;
+       //MKxK para horizontal
+       if (Form5.RadioButton1.Checked) then
+       begin
+         MkxK[0][0]:= -1; MkxK[0][1]:=0; MkxK[0][2]:=1;
+         MkxK[1][0]:= -2; MkxK[1][1]:=0; MkxK[1][2]:=2;
+         MkxK[2][0]:= -1; MkxK[2][1]:=0; MkxK[2][2]:=1;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para vertical
+       if (Form5.RadioButton2.Checked) then
+       begin
+         MkxK[0][0]:= -1; MkxK[0][1]:=-2; MkxK[0][2]:=-1;
+         MkxK[1][0]:=  0; MkxK[1][1]:= 0; MkxK[1][2]:= 0;
+         MkxK[2][0]:=  1; MkxK[2][1]:= 2; MkxK[2][2]:= 1;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para 45°
+       if (Form5.RadioButton3.Checked) then
+       begin
+         MkxK[0][0]:=  0; MkxK[0][1]:= 1; MkxK[0][2]:= 2;
+         MkxK[1][0]:= -1; MkxK[1][1]:= 0; MkxK[1][2]:= 1;
+         MkxK[2][0]:= -2; MkxK[2][1]:=-1; MkxK[2][2]:= 0;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para -45°
+       if (Form5.RadioButton4.Checked) then
+       begin
+         MkxK[0][0]:= -2; MkxK[0][1]:=-1; MkxK[0][2]:=0;
+         MkxK[1][0]:= -1; MkxK[1][1]:= 0; MkxK[1][2]:=1;
+         MkxK[2][0]:=  0; MkxK[2][1]:= 1; MkxK[2][2]:=2;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para Completo
+       if (Form5.RadioButton5.Checked) then
+       begin
+         MkxKD1[0][0]:= -1; MkxKD1[0][1]:=0; MkxKD1[0][2]:=1;
+         MkxKD1[1][0]:= -2; MkxKD1[1][1]:=0; MkxKD1[1][2]:=2;
+         MkxKD1[2][0]:= -1; MkxKD1[2][1]:=0; MkxKD1[2][2]:=1;
+
+         MkxKD2[0][0]:= -1; MkxKD2[0][1]:=-2; MkxKD2[0][2]:=-1;
+         MkxKD2[1][0]:=  0; MkxKD2[1][1]:= 0; MkxKD2[1][2]:= 0;
+         MkxKD2[2][0]:=  1; MkxKD2[2][1]:= 2; MkxKD2[2][2]:= 1;
+
+         MkxKD3[0][0]:=  0; MkxKD3[0][1]:= 1; MkxKD3[0][2]:= 2;
+         MkxKD3[1][0]:= -1; MkxKD3[1][1]:= 0; MkxKD3[1][2]:= 1;
+         MkxKD3[2][0]:= -2; MkxKD3[2][1]:=-1; MkxKD3[2][2]:= 0;
+
+         MkxKD4[0][0]:= -2; MkxKD4[0][1]:=-1; MkxKD4[0][2]:=0;
+         MkxKD4[1][0]:= -1; MkxKD4[1][1]:= 0; MkxKD4[1][2]:=1;
+         MkxKD4[2][0]:=  0; MkxKD4[2][1]:= 1; MkxKD4[2][2]:=2;
+
+         convolucionBordes(IM,M2);
+       end;
+       mat2mat(M2,IM,(k div 2));
+       mat2bm(IM, BM);
+       Image1.Picture.Bitmap.Assign(BM);
+       //GuardarImagenConFiltroAplicado
+       IMaux2.alto := BM.Height;
+       IMaux2.ancho := BM.Width;
+       SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+       bm2mat(BM,IMaux2);
+       //Reiniciando Formulario
+       Form5.RadioButton1.Checked:= false;
+       Form5.RadioButton2.Checked:= false;
+       Form5.RadioButton3.Checked:= false;
+       Form5.RadioButton4.Checked:= false;
+       Form5.RadioButton5.Checked:= false;
 end;
 
 procedure TForm1.FormClick(Sender: TObject);
@@ -1030,6 +1639,7 @@ procedure TForm1.MediaArmonicaClick(Sender: TObject);
        SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
        bm2mat(BM,IMaux);
 
+       //Aplicando filtro
        Armonica(IM, M2, (k div 2));
 
        mat2mat(M2,IM,(k div 2));
@@ -1042,60 +1652,45 @@ procedure TForm1.MediaArmonicaClick(Sender: TObject);
        bm2mat(BM,IMaux2);
        //Reiniciar Formulario Configuraciones
        Form2.SpinEdit1.Value:=3;
-       Form2.RadioButton1.Checked:=false;
-       Form2.RadioButton2.Checked:=false;
-       Form2.RadioButton3.Checked:=false;
-       Form2.RadioButton4.Checked:= false;
 
 end;
 
 procedure TForm1.MediaGeometricaClick(Sender: TObject);
-  begin
-       //ConfigurandoVentanaExterna
-       Form2.Label1.Visible:= false;
-       Form2.TrackBar1.Visible:= false;
-       Form2.CheckBox1.Visible:= false;
-       Form2.CheckBox2.Visible:= false;
-       Form2.CheckBox3.Visible:= false;
-       Form2.SpinEdit1.Visible:= true;
-       Form2.RadioButton2.Visible:= True;
-       Form2.RadioButton3.Caption:= '3';
-       Form2.RadioButton3.Visible:= True;
-       Form2.Label3.Visible:= True;
-       Form2.Label4.Visible:= True;
-       Form2.ShowModal;
-       Form2.SpinEdit1.Visible:= false;
-       Form2.Label3.Visible:= false;
-       Form2.Label1.Visible:= True;
-       Form2.TrackBar1.Visible:= True;
-       Form2.CheckBox1.Visible:= True;
-       Form2.CheckBox2.Visible:= True;
-       Form2.CheckBox3.Visible:= True;
-       Form2.RadioButton2.Visible:= false;
-       Form2.RadioButton3.Visible:= false;
-       Form2.RadioButton3.Caption:='4';
-       //GuardarImagenAntesDeAplicarFiltro
-       IMaux.alto := BM.Height;
-       IMaux.ancho := BM.Width;
-       SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
-       bm2mat(BM,IMaux);
+begin
+      //ConfigurandoVentanaExterna
+      Form2.Label1.Visible:= false;
+      Form2.TrackBar1.Visible:= false;
+      Form2.CheckBox1.Visible:= false;
+      Form2.CheckBox2.Visible:= false;
+      Form2.CheckBox3.Visible:= false;
+      Form2.SpinEdit1.Visible:= true;
+      Form2.Label3.Visible:= True;
+      Form2.ShowModal;
+      Form2.SpinEdit1.Visible:= false;
+      Form2.Label3.Visible:= false;
+      Form2.Label1.Visible:= True;
+      Form2.TrackBar1.Visible:= True;
+      Form2.CheckBox1.Visible:= True;
+      Form2.CheckBox2.Visible:= True;
+      Form2.CheckBox3.Visible:= True;
+      //GuardarImagenAntesDeAplicarFiltro
+      IMaux.alto := BM.Height;
+      IMaux.ancho := BM.Width;
+      SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+      bm2mat(BM,IMaux);
+      //Aplicando filtro
+      Geometrica(Im, M2, (k div 2));
 
-       Geometrica(IM,M2,(k div 2), p);
-
-       mat2mat(M2,IM,(k div 2));
-       mat2bm(IM, BM);
-       Image1.Picture.Bitmap.Assign(BM);
-       //GuardarImagenConFiltroAplicado
-       IMaux2.alto := BM.Height;
-       IMaux2.ancho := BM.Width;
-       SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
-       bm2mat(BM,IMaux2);
-       //Reiniciar Formulario Configuraciones
-       Form2.SpinEdit1.Value:=3;
-       Form2.RadioButton1.Checked:=false;
-       Form2.RadioButton2.Checked:=false;
-       Form2.RadioButton3.Checked:=false;
-       Form2.RadioButton4.Checked:= false;
+      mat2mat(M2,IM,(k div 2));
+      mat2bm(IM, BM);
+      Image1.Picture.Bitmap.Assign(BM);
+      //GuardarImagenConFiltroAplicado
+      IMaux2.alto := BM.Height;
+      IMaux2.ancho := BM.Width;
+      SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+      bm2mat(BM,IMaux2);
+      //Reiniciando formulario config
+      Form2.SpinEdit1.Value:=3;
 end;
 
 procedure TForm1.MedianaClick(Sender: TObject);
@@ -1212,6 +1807,166 @@ var
        Form2.CheckBox1.Checked:= false;
        Form2.CheckBox2.Checked:= false;
        Form2.CheckBox3.Checked:= false;
+end;
+
+procedure TForm1.OperadorLapGaussianaClick(Sender: TObject);
+var
+  i,j: Integer;
+  gris: Double;
+  begin
+       //ConfigurandoVentanaExterna
+       Form5.RadioButton1.Caption:='Horizontal/Vertical';
+       Form5.RadioButton2.Caption:='Diagonales';
+       Form5.RadioButton3.Caption:='Completo';
+       Form5.RadioButton4.Visible:= false;
+       Form5.RadioButton5.Visible:= false;
+       Form5.ShowModal;
+       Form5.RadioButton4.Visible:= true;
+       Form5.RadioButton5.Visible:= true;
+       Form5.RadioButton1.Caption:='Horizontal';
+       Form5.RadioButton2.Caption:='Vertical';
+       Form5.RadioButton3.Caption:='45°';
+       //GuardarImagenAntesDeAplicarFiltro
+       IMaux.alto := BM.Height;
+       IMaux.ancho := BM.Width;
+       SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+       bm2mat(BM,IMaux);
+       //Aplicando escala de grises
+       for i:=0 to IM.alto-1 do
+       begin
+           for j:=0 to IM.ancho-1 do
+           begin
+                gris := (IM.M[i][j][0] + IM.M[i][j][1] + IM.M[i][j][2])/3.0;
+                IM.M[i][j][0] := round(gris);
+                IM.M[i][j][1] := round(gris);
+                IM.M[i][j][2] := round(gris);
+           end;
+       end;
+       //Llenando matriz KxK
+       k := 3;
+       //MKxK para horizontal/Vertical
+       if (Form5.RadioButton1.Checked) then
+       begin
+         MkxK[0][0]:=  1; MkxK[0][1]:= -2; MkxK[0][2]:=  1;
+         MkxK[1][0]:= -2; MkxK[1][1]:=  4; MkxK[1][2]:= -2;
+         MkxK[2][0]:=  1; MkxK[2][1]:= -2; MkxK[2][2]:=  1;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para Diagonales
+       if (Form5.RadioButton2.Checked) then
+       begin
+         MkxK[0][0]:= -2; MkxK[0][1]:= 1; MkxK[0][2]:= -2;
+         MkxK[1][0]:=  1; MkxK[1][1]:= 4; MkxK[1][2]:= 1;
+         MkxK[2][0]:= -2; MkxK[2][1]:= 1; MkxK[2][2]:= -2;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para Completo
+       if (Form5.RadioButton3.Checked) then
+       begin
+         MkxKD1[0][0]:=  1; MkxKD1[0][1]:= -2; MkxKD1[0][2]:=  1;
+         MkxKD1[1][0]:= -2; MkxKD1[1][1]:=  4; MkxKD1[1][2]:= -2;
+         MkxKD1[2][0]:=  1; MkxKD1[2][1]:= -2; MkxKD1[2][2]:=  1;
+
+         MkxKD2[0][0]:= -2; MkxKD2[0][1]:= 1; MkxKD2[0][2]:= -2;
+         MkxKD2[1][0]:=  1; MkxKD2[1][1]:= 4; MkxKD2[1][2]:= 1;
+         MkxKD2[2][0]:= -2; MkxKD2[2][1]:= 1; MkxKD2[2][2]:= -2;
+
+         convolucionBordesLaplacianos(IM,M2);
+       end;
+       mat2mat(M2,IM,(k div 2));
+       mat2bm(IM, BM);
+       Image1.Picture.Bitmap.Assign(BM);
+       //GuardarImagenConFiltroAplicado
+       IMaux2.alto := BM.Height;
+       IMaux2.ancho := BM.Width;
+       SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+       bm2mat(BM,IMaux2);
+       //Reiniciando Formulario
+       Form5.RadioButton1.Checked:= false;
+       Form5.RadioButton2.Checked:= false;
+       Form5.RadioButton3.Checked:= false;
+end;
+
+procedure TForm1.OperadorLaplacianoClick(Sender: TObject);
+var
+  i,j: Integer;
+  gris: Double;
+  begin
+       //ConfigurandoVentanaExterna
+       Form5.RadioButton1.Caption:='Horizontal/Vertical';
+       Form5.RadioButton2.Caption:='Diagonales';
+       Form5.RadioButton3.Caption:='Completo';
+       Form5.RadioButton4.Visible:= false;
+       Form5.RadioButton5.Visible:= false;
+       Form5.ShowModal;
+       Form5.RadioButton4.Visible:= true;
+       Form5.RadioButton5.Visible:= true;
+       Form5.RadioButton1.Caption:='Horizontal';
+       Form5.RadioButton2.Caption:='Vertical';
+       Form5.RadioButton3.Caption:='45°';
+       //GuardarImagenAntesDeAplicarFiltro
+       IMaux.alto := BM.Height;
+       IMaux.ancho := BM.Width;
+       SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+       bm2mat(BM,IMaux);
+       //Aplicando escala de grises
+       for i:=0 to IM.alto-1 do
+       begin
+           for j:=0 to IM.ancho-1 do
+           begin
+                gris := (IM.M[i][j][0] + IM.M[i][j][1] + IM.M[i][j][2])/3.0;
+                IM.M[i][j][0] := round(gris);
+                IM.M[i][j][1] := round(gris);
+                IM.M[i][j][2] := round(gris);
+           end;
+       end;
+       //Llenando matriz KxK
+       k := 3;
+       //MKxK para horizontal/Vertical
+       if (Form5.RadioButton1.Checked) then
+       begin
+         MkxK[0][0]:=  0; MkxK[0][1]:= -1; MkxK[0][2]:=  0;
+         MkxK[1][0]:= -1; MkxK[1][1]:=  4; MkxK[1][2]:= -1;
+         MkxK[2][0]:=  0; MkxK[2][1]:= -1; MkxK[2][2]:=  0;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para Diagonales
+       if (Form5.RadioButton2.Checked) then
+       begin
+         MkxK[0][0]:= -1; MkxK[0][1]:= 0; MkxK[0][2]:= -1;
+         MkxK[1][0]:=  0; MkxK[1][1]:= 4; MkxK[1][2]:= 0;
+         MkxK[2][0]:= -1; MkxK[2][1]:= 0; MkxK[2][2]:= -1;
+
+         convolucion(IM,M2,(k div 2));
+       end;
+       //MKxK para Completo
+       if (Form5.RadioButton3.Checked) then
+       begin
+         MkxKD1[0][0]:=  0; MkxKD1[0][1]:= -1; MkxKD1[0][2]:=  0;
+         MkxKD1[1][0]:= -1; MkxKD1[1][1]:=  4; MkxKD1[1][2]:= -1;
+         MkxKD1[2][0]:=  0; MkxKD1[2][1]:= -1; MkxKD1[2][2]:=  0;
+
+         MkxKD2[0][0]:= -1; MkxKD2[0][1]:= 0; MkxKD2[0][2]:= -1;
+         MkxKD2[1][0]:=  0; MkxKD2[1][1]:= 4; MkxKD2[1][2]:= 0;
+         MkxKD2[2][0]:= -1; MkxKD2[2][1]:= 0; MkxKD2[2][2]:= -1;
+
+         convolucionBordesLaplacianos(IM,M2);
+       end;
+       mat2mat(M2,IM,(k div 2));
+       mat2bm(IM, BM);
+       Image1.Picture.Bitmap.Assign(BM);
+       //GuardarImagenConFiltroAplicado
+       IMaux2.alto := BM.Height;
+       IMaux2.ancho := BM.Width;
+       SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+       bm2mat(BM,IMaux2);
+       //Reiniciando Formulario
+       Form5.RadioButton1.Checked:= false;
+       Form5.RadioButton2.Checked:= false;
+       Form5.RadioButton3.Checked:= false;
 end;
 
 procedure TForm1.PromedioDireccionalClick(Sender: TObject);

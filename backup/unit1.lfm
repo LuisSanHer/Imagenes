@@ -270,24 +270,34 @@ object Form1: TForm1
         Caption = 'Detección de Bordes'
         object FiltroRoberts: TMenuItem
           Caption = 'Filtro de Roberts'
+          OnClick = FiltroRobertsClick
         end
-        object FiltroKirsch: TMenuItem
-          Caption = 'Filtro de Kirsch(Investigar)'
+        object FiltroPrewitt: TMenuItem
+          Caption = 'Filtro de Prewitt'
+          OnClick = FiltroPrewittClick
         end
         object FiltroSobel: TMenuItem
           Caption = 'Filtro de Sobel'
+          OnClick = FiltroSobelClick
+        end
+        object FiltroKirsch: TMenuItem
+          Caption = 'Filtro de Kirsch(Investigar)'
+          OnClick = FiltroKirschClick
         end
         object FiltroFreiChen: TMenuItem
           Caption = 'Filtro de Frei-Chen(Investigar)'
+          OnClick = FiltroFreiChenClick
         end
       end
       object FiltrosSegundaDerivada: TMenuItem
         Caption = 'Filtros de la segunda derivada'
         object OperadorLaplaciano: TMenuItem
           Caption = 'Operador Laplaciano'
+          OnClick = OperadorLaplacianoClick
         end
         object OperadorLapGaussiana: TMenuItem
           Caption = 'Operador Laplaciano de la gaussiana'
+          OnClick = OperadorLapGaussianaClick
         end
       end
     end
