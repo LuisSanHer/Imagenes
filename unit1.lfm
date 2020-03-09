@@ -5,7 +5,7 @@ object Form1: TForm1
   Width = 502
   AllowDropFiles = True
   Caption = 'Ventana principal'
-  ClientHeight = 596
+  ClientHeight = 577
   ClientWidth = 502
   Menu = MainMenu1
   OnClick = FormClick
@@ -38,7 +38,7 @@ object Form1: TForm1
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
-    Top = 573
+    Top = 554
     Width = 502
     Panels = <    
       item
@@ -226,6 +226,7 @@ object Form1: TForm1
       Enabled = False
       object Suavizado: TMenuItem
         Caption = 'Suavizado'
+        OnClick = SuavizadoClick
         object MediaAritmetica: TMenuItem
           Caption = 'Media Aritmetica'
           OnClick = MediaAritmeticaClick
@@ -298,6 +299,67 @@ object Form1: TForm1
         object OperadorLapGaussiana: TMenuItem
           Caption = 'Operador Laplaciano de la gaussiana'
           OnClick = OperadorLapGaussianaClick
+        end
+      end
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Geometricos'
+      OnClick = MenuItem2Click
+      object MenuItem3: TMenuItem
+        Caption = 'Escalado Lazy'
+        OnClick = MenuItem3Click
+        object MenuItem8: TMenuItem
+          Caption = 'Escalado x2'
+          OnClick = MenuItem8Click
+        end
+        object MenuItem9: TMenuItem
+          Caption = 'Escalado /2'
+          OnClick = MenuItem9Click
+        end
+      end
+      object MenuItem4: TMenuItem
+        Caption = 'Escalado Lineal'
+        object MenuItem10: TMenuItem
+          Caption = 'Escalado x2'
+          OnClick = MenuItem10Click
+        end
+        object MenuItem11: TMenuItem
+          Caption = 'Escalado /2'
+        end
+      end
+      object MenuItem5: TMenuItem
+        Caption = 'Escalado Bi-lineal'
+        object MenuItem12: TMenuItem
+          Caption = 'Escalado x2'
+        end
+        object MenuItem13: TMenuItem
+          Caption = 'Escalado /2'
+        end
+        object MenuItem14: TMenuItem
+          Caption = 'Escalado libre'
+        end
+      end
+      object MenuItem6: TMenuItem
+        Caption = 'Reflexion'
+        object MenuItem15: TMenuItem
+          Caption = 'Horizontal'
+          OnClick = MenuItem15Click
+        end
+        object MenuItem16: TMenuItem
+          Caption = 'Vertical'
+          OnClick = MenuItem16Click
+        end
+      end
+      object MenuItem7: TMenuItem
+        Caption = 'Rotacion'
+        object MenuItem17: TMenuItem
+          Caption = '90 grados'
+        end
+        object MenuItem18: TMenuItem
+          Caption = '180 grados'
+        end
+        object MenuItem19: TMenuItem
+          Caption = 'Rotacion libre'
         end
       end
     end

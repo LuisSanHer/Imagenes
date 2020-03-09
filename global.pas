@@ -38,6 +38,7 @@ var
   MKxKD6 : array[0..2] of array[0..2] of Double;
   MKxKD7 : array[0..2] of array[0..2] of Double;
   MKxKD8 : array[0..2] of array[0..2] of Double;
+  visitados: array of array of Integer;
 
 
 procedure bm2mat(const BM: TBitmap; var M: MAT3D);
@@ -50,6 +51,7 @@ procedure convolucionPD(M1: MAT3D; M2: MAT3D; k: Integer);
 procedure Armonica(M1: Mat3D; M2: MAT3D; K: Integer);
 procedure Geometrica(M1: MAT3D; M2: MAT3D; k: Integer);
 procedure mat2mat(M1: MAT3D; M2: MAT3D; k: Integer);
+procedure matFull(M1: MAT3D; M2: MAT3D);
 
 
 implementation
@@ -69,7 +71,20 @@ begin
      end;
 end;
 
-
+procedure matFull(M1: MAT3D; M2: MAT3D);
+var
+    i, j : Integer;
+begin
+     for i:=0 to M1.alto-1 do
+     begin
+         for j:=0 to M1.ancho-1 do
+         begin
+             M2.M[i][j][0] := M1.M[i][j][0];
+             M2.M[i][j][1] := M1.M[i][j][1];
+             M2.M[i][j][2] := M1.M[i][j][2];
+         end;
+     end;
+end;
 procedure convolucion(M1: MAT3D; M2: MAT3D; k: Integer);
 var
     i, j,aa,bb : Integer;
@@ -437,4 +452,5 @@ end;
 
 
 end.
+
 
