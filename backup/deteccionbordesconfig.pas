@@ -23,6 +23,7 @@ type
     RadioButton6: TRadioButton;
     RadioButton7: TRadioButton;
     RadioButton8: TRadioButton;
+    RadioButton9: TRadioButton;
     procedure AceptarClick(Sender: TObject);
     procedure CancelarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);

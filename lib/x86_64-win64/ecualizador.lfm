@@ -1,12 +1,12 @@
 object Form4: TForm4
-  Left = 720
+  Left = 716
   Height = 386
-  Top = 220
+  Top = 347
   Width = 488
   Caption = 'Form4'
   ClientHeight = 386
   ClientWidth = 488
-  LCLVersion = '2.0.2.0'
+  LCLVersion = '2.0.6.0'
   object TrackBar1: TTrackBar
     Left = 104
     Height = 49
@@ -55,33 +55,33 @@ object Form4: TForm4
   end
   object Label5: TLabel
     Left = 272
-    Height = 17
+    Height = 15
     Top = 232
-    Width = 8
+    Width = 6
     Caption = '0'
     ParentColor = False
   end
   object Label6: TLabel
     Left = 272
-    Height = 17
+    Height = 15
     Top = 160
-    Width = 8
+    Width = 6
     Caption = '0'
     ParentColor = False
   end
   object Label7: TLabel
     Left = 272
-    Height = 17
+    Height = 15
     Top = 88
-    Width = 8
+    Width = 6
     Caption = '0'
     ParentColor = False
   end
   object Label8: TLabel
     Left = 272
-    Height = 17
+    Height = 15
     Top = 16
-    Width = 8
+    Width = 6
     Caption = '0'
     ParentColor = False
   end
@@ -105,33 +105,33 @@ object Form4: TForm4
   end
   object R: TCheckBox
     Left = 40
-    Height = 23
+    Height = 19
     Top = 64
-    Width = 35
+    Width = 27
     Caption = 'R'
     TabOrder = 6
   end
   object G: TCheckBox
     Left = 40
-    Height = 23
+    Height = 19
     Top = 136
-    Width = 36
+    Width = 28
     Caption = 'G'
     TabOrder = 7
   end
   object B: TCheckBox
     Left = 40
-    Height = 23
+    Height = 19
     Top = 208
-    Width = 35
+    Width = 27
     Caption = 'B'
     TabOrder = 8
   end
   object Intensidad: TCheckBox
     Left = 8
-    Height = 23
+    Height = 19
     Top = 272
-    Width = 97
+    Width = 75
     Caption = 'Intensidad'
     OnChange = IntensidadChange
     TabOrder = 9

@@ -21,7 +21,7 @@ type
     Chart3FuncSeries1: TFuncSeries;
     Chart4: TChart;
     Chart4FuncSeries1: TFuncSeries;
-    procedure calcularH(M : MAT3D);
+    procedure calcularH();
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart2FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart3FuncSeries1Calculate(const AX: Double; out AY: Double);

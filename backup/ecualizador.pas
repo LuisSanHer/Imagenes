@@ -73,10 +73,14 @@ end;
 
 procedure TForm4.AceptarClick(Sender: TObject);
 begin
-  rv:= Trackbar1.Position;
-  gv:= Trackbar2.Position;
-  bv:= Trackbar3.Position;
-  i:= Trackbar4.Position;
+  if (R.Checked) then
+     rv:= Trackbar1.Position;
+  if (G.Checked) then
+     gv:= Trackbar2.Position;
+  if (B.Checked) then
+     bv:= Trackbar3.Position;
+  if (Intensidad.Checked) then
+     i:= Trackbar4.Position;
   Form4.Close;
 end;
 

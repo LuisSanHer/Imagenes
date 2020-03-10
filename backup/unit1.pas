@@ -140,10 +140,9 @@ type
     procedure MediaPonderadaClick(Sender: TObject);
     procedure MediaRecortadaClick(Sender: TObject);
     procedure MenuItem10Click(Sender: TObject);
+    procedure MenuItem12Click(Sender: TObject);
     procedure MenuItem15Click(Sender: TObject);
     procedure MenuItem16Click(Sender: TObject);
-    procedure MenuItem2Click(Sender: TObject);
-    procedure MenuItem3Click(Sender: TObject);
     procedure MenuItem8Click(Sender: TObject);
     procedure MenuItem9Click(Sender: TObject);
     procedure NegativoClick(Sender: TObject);
@@ -1793,8 +1792,115 @@ end;
 
 procedure TForm1.MenuItem10Click(Sender: TObject);
 var
-  i,j,a,b,x,y,cont,c:Integer;
-  sumaR,sumaG,sumaB: Double;
+  i,j,x,y,a,b,cont,c: Integer;
+  sumaR,sumaB,sumaG: Double;
+begin
+  //GuardarImagenAntesDeAplicarFiltro
+  IMaux.alto := BM.Height;
+  IMaux.ancho := BM.Width;
+  SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+  bm2mat(BM,IMaux);
+  SetLength(M2.M,IM.alto*2,IM.ancho*2,3);
+  M2.alto:=IM.alto*2;
+  M2.ancho:=IM.ancho*2;
+  for i:=0 to IM.alto-1 do
+  begin
+       for j:=0 to IM.ancho-1 do
+       begin
+            M2.M[i*2][j*2][0]:=IM.M[i][j][0];
+            M2.M[i*2][j*2][1]:=IM.M[i][j][1];
+            M2.M[i*2][j*2][2]:=IM.M[i][j][2];
+       end;
+  end;
+
+  i:=0;
+  while i < M2.alto do
+  begin
+       j:=1;
+          while j < M2.ancho do
+          begin
+             if j= M2.ancho-1 then
+             begin
+                M2.M[i][j][0]:=M2.M[i][j-1][0];
+                M2.M[i][j][1]:=M2.M[i][j-1][1];
+                M2.M[i][j][2]:=M2.M[i][j-1][2];
+             end
+             else
+             begin
+                M2.M[i][j][0]:=round((M2.M[i][j-1][0] + M2.M[i][j+1][0])/2.0);
+                M2.M[i][j][1]:=round((M2.M[i][j-1][1] + M2.M[i][j+1][1])/2.0);
+                M2.M[i][j][2]:=round((M2.M[i][j-1][2] + M2.M[i][j+1][2])/2.0);
+             end;
+             j:=j+2;
+          end;
+          i:=i+2;
+  end;
+
+  i:=1;
+  while i < M2.alto do
+  begin
+     j:=0;
+          while j < M2.ancho do
+          begin
+             if i= M2.alto-1 then
+             begin
+                M2.M[i][j][0] := M2.M[i-1][j][0];
+                M2.M[i][j][1] := M2.M[i-1][j][1];
+                M2.M[i][j][2] := M2.M[i-1][j][2];
+             end
+             else
+             begin
+                M2.M[i][j][0] := round((M2.M[i-1][j][0] + M2.M[i+1][j][0])/2.0);
+                M2.M[i][j][1] := round((M2.M[i-1][j][1] + M2.M[i+1][j][1])/2.0);
+                M2.M[i][j][2] := round((M2.M[i-1][j][2] + M2.M[i+1][j][2])/2.0);
+             end;
+             j:=j+2;
+          end;
+          i:=i+2;
+  end;
+  SetLength(visitados,IM.alto*2,IM.ancho*2);
+  for i:=1 to IM.alto-2 do
+  begin
+      x := i*2;
+      for j:=1 to IM.ancho-2 do
+      begin
+          cont := 0; sumaR := 0; sumaG := 0; sumaB := 0; c:=0;
+          y := j*2;
+          for a:= -1 to 1 do
+          begin
+             for b:= -1 to 1 do
+             begin
+                If ( (cont MOD 2=0)  AND (cont<>0) AND (visitados[x+a][y+b]=1) ) then
+                begin
+                  sumaR := sumaR + M2.M[x+a][y+b][0];
+                  sumaG := sumaG + M2.M[x+a][y+b][1];
+                  sumaB := sumaB + M2.M[x+a][y+b][2];
+                  c := c+1;
+                end;
+                cont := cont + 1;
+             end;
+          end;
+          M2.M[x][y][0]:= sumaR/c;
+          M2.M[x][y][1]:= sumaG/c;
+          M2.M[x][y][2]:= sumaB/c;
+          visitados[x][y] := 1;
+      end;
+  end;
+
+  StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
+  BM.SetSize(M2.ancho,M2.alto);
+  mat2bm(M2,BM);
+  Image1.Picture.Bitmap.Assign(BM);
+  //GuardarImagenConFiltroAplicado
+  IMaux2.alto := BM.Height;
+  IMaux2.ancho := BM.Width;
+  SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+  bm2mat(BM,IMaux2);
+end;
+
+procedure TForm1.MenuItem12Click(Sender: TObject);
+var
+  i,j : Integer;
 begin
   //GuardarImagenAntesDeAplicarFiltro
   IMaux.alto := BM.Height;
@@ -1802,108 +1908,97 @@ begin
   SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
   bm2mat(BM,IMaux);
   //AplicandoFiltro
-  SetLength(M2.M, IM.alto*2, IM.ancho*2, 3);
-  M2.alto := IM.alto*2;
-  M2.ancho := IM.ancho*2;
+  SetLength(M2.M,IM.alto*2,IM.ancho*2,3);
+  M2.alto:=IM.alto*2;
+  M2.ancho:=IM.ancho*2;
   for i:=0 to IM.alto-1 do
   begin
-      a := i*2;
-      for j:=0 to IM.ancho-1 do
-      begin
-          b := j*2;
-          M2.M[a][b][0] := IM.M[i][j][0];
-          M2.M[a][b][1] := IM.M[i][j][1];
-          M2.M[a][b][2] := IM.M[i][j][2];
-      end;
+       for j:=0 to IM.ancho-1 do
+       begin
+            M2.M[i*2][j*2][0] := IM.M[i][j][0];
+            M2.M[i*2][j*2][1] := IM.M[i][j][1];
+            M2.M[i*2][j*2][2] := IM.M[i][j][2];
+       end;
   end;
 
-    i:=0;
-    while i < M2.alto do
-    begin
-         j:=1;
-            while j < M2.ancho do
-            begin
-               if j= M2.ancho-1 then
-               begin
-                  M2.M[i][j][0]:=M2.M[i][j-1][0];
-                  M2.M[i][j][1]:=M2.M[i][j-1][1];
-                  M2.M[i][j][2]:=M2.M[i][j-1][2];
-               end
-               else
-               begin
-
-                  M2.M[i][j][0]:=round((M2.M[i][j-1][0] + M2.M[i][j+1][0])/2.0);
-                  M2.M[i][j][1]:=round((M2.M[i][j-1][1] + M2.M[i][j+1][1])/2.0);
-                  M2.M[i][j][2]:=round((M2.M[i][j-1][2] + M2.M[i][j+1][2])/2.0);
-               end;
-               j:=j+2;
-            end;
-            i:=i+2;
-    end;
-
-    j:=0;
-    while j < M2.ancho do
-    begin
-       i:=1;
-            while i < M2.alto do
-            begin
-               if i= M2.alto-1 then
-               begin
-                  M2.M[j][i][0]:=M2.M[i-1][j][0];
-                  M2.M[j][i][1]:=M2.M[i-1][j][1];
-                  M2.M[j][i][2]:=M2.M[i-1][j][2];
-               end
-               else
-               begin
-                  M2.M[i][j][0]:=round((M2.M[i-1][j][0] + M2.M[i+1][j][0])/2.0);
-                  M2.M[i][j][1]:=round((M2.M[i-1][j][1] + M2.M[i+1][j][1])/2.0);
-                  M2.M[i][j][2]:=round((M2.M[i-1][j][2] + M2.M[i+1][j][2])/2.0);
-               end;
-               i:=i+2;
-            end;
-       j:=j+2;
-    end;
-
-
-    i:=1;
-    while i < M2.alto do
-    begin
+  i:=0;
+  while i < M2.alto do
+  begin
        j:=1;
-            while j < M2.ancho do
-            begin
-               if j= M2.ancho-1 then
-               begin
-                  if (i=M2.alto-1) and (j=M2.ancho-1)  then
-                     M2.M[i][j][0]:=round((M2.M[i][j-1][0]+ M2.M[i-1][j][0])/2)
-                  else
-                  begin
-                       M2.M[i][j][0]:=round((M2.M[i][j-1][0] + M2.M[i+1][j][0] + M2.M[i-1][j][0])/3);
-                       M2.M[i][j][1]:=round((M2.M[i][j-1][1] + M2.M[i+1][j][1] + M2.M[i-1][j][1])/3);
-                       M2.M[i][j][2]:=round((M2.M[i][j-1][2] + M2.M[i+1][j][2] + M2.M[i-1][j][2])/3);
-                  end;
-               end
-               else if i=M2.alto-1 then
-               begin
-                  M2.M[i][j][0]:=round((M2.M[i][j-1][0] + M2.M[i][j+1][0] + M2.M[i-1][j][0])/3);
-                  M2.M[i][j][1]:=round((M2.M[i][j-1][1] + M2.M[i][j+1][1] + M2.M[i-1][j][1])/3);
-                  M2.M[i][j][2]:=round((M2.M[i][j-1][2] + M2.M[i][j+1][2] + M2.M[i-1][j][2])/3);
-               end
-               else
-               begin
-                  M2.M[i][j][0]:=round((M2.M[i][j-1][0] + M2.M[i][j+1][0] + M2.M[i+1][j][0] + M2.M[i-1][j][0])/4);
-                  M2.M[i][j][1]:=round((M2.M[i][j-1][1] + M2.M[i][j+1][1] + M2.M[i+1][j][1] + M2.M[i-1][j][1])/4);
-                  M2.M[i][j][2]:=round((M2.M[i][j-1][2] + M2.M[i][j+1][2] + M2.M[i+1][j][2] + M2.M[i-1][j][2])/4);
-               end;
-               j:=j+2;
-            end;
-            i:=i+2;
-    end;
-  SetLength(IM.M, M2.alto, M2.ancho, 3);
-  IM.alto := M2.alto;
-  IM.ancho := M2.ancho;
-  matFull(M2,IM);
-  BM.SetSize(M2.ancho, M2.alto);
-  mat2bm(IM, BM);
+          while j < M2.ancho do
+          begin
+             if j= M2.ancho-1 then
+             begin
+                M2.M[i][j][0]:=M2.M[i][j-1][0];
+                M2.M[i][j][1]:=M2.M[i][j-1][1];
+                M2.M[i][j][2]:=M2.M[i][j-1][2];
+             end
+             else
+             begin
+
+                M2.M[i][j][0]:=round((M2.M[i][j-1][0] + M2.M[i][j+1][0])/2.0);
+                M2.M[i][j][1]:=round((M2.M[i][j-1][1] + M2.M[i][j+1][1])/2.0);
+                M2.M[i][j][2]:=round((M2.M[i][j-1][2] + M2.M[i][j+1][2])/2.0);
+             end;
+             j:=j+2;
+          end;
+          i:=i+2;
+  end;
+
+  i:=1;
+  while i < M2.alto do
+  begin
+     j:=0;
+          while j< M2.ancho do
+          begin
+             if i= M2.alto-1 then
+             begin
+                if j=0 then
+                begin
+
+                  M2.M[i][j][0]:=round((M2.M[i-1][j][0] + M2.M[i][j+1][0] + M2.M[i-1][j+1][0])/3.0);
+                  M2.M[i][j][1]:=round((M2.M[i-1][j][1] + M2.M[i][j+1][1] + M2.M[i-1][j+1][1])/3.0);
+                  M2.M[i][j][2]:=round((M2.M[i-1][j][2] + M2.M[i][j+1][2] + M2.M[i-1][j+1][2])/3.0);
+                end
+                else if (i=M2.alto-1) and (j=M2.ancho-1)  then
+                begin
+                  M2.M[i][j][0]:=round((M2.M[i-1][j][0] + M2.M[i][j-1][0] + M2.M[i-1][j-1][0])/3.0);
+                  M2.M[i][j][1]:=round((M2.M[i-1][j][1] + M2.M[i][j-1][1] + M2.M[i-1][j-1][1])/3.0);
+                  M2.M[i][j][2]:=round((M2.M[i-1][j][2] + M2.M[i][j-1][2] + M2.M[i-1][j-1][2])/3.0);
+                end
+                else
+                begin
+                  M2.M[i][j][0]:=round((M2.M[i-1][j][0] + M2.M[i-1][j+1][0] + M2.M[i-1][j-1][0] + M2.M[i][j-1][0])/4.0);
+                  M2.M[i][j][1]:=round((M2.M[i-1][j][1] + M2.M[i-1][j+1][1] + M2.M[i-1][j-1][1] + M2.M[i][j-1][1])/4.0);
+                  M2.M[i][j][2]:=round((M2.M[i-1][j][2] + M2.M[i-1][j+1][2] + M2.M[i-1][j-1][2] + M2.M[i][j-1][2])/4.0);
+                end;
+             end
+             else if j=M2.ancho-1 then
+             begin
+               M2.M[i][j][0]:=round((M2.M[i-1][j][0] + M2.M[i][j-1][0] + M2.M[i+1][j][0])/3.0);
+               M2.M[i][j][1]:=round((M2.M[i-1][j][1] + M2.M[i][j-1][1] + M2.M[i+1][j][1])/3.0);
+               M2.M[i][j][2]:=round((M2.M[i-1][j][2] + M2.M[i][j-1][2] + M2.M[i+1][j][2])/3.0);
+             end
+             else if j=0 then
+                begin
+
+                  M2.M[i][j][0]:=round((M2.M[i-1][j][0] + M2.M[i][j+1][0] + M2.M[i+1][j+1][0] + M2.M[i+1][j][0])/4.0);
+                  M2.M[i][j][1]:=round((M2.M[i-1][j][1] + M2.M[i][j+1][1] + M2.M[i+1][j+1][1] + M2.M[i+1][j][1])/4.0);
+                  M2.M[i][j][2]:=round((M2.M[i-1][j][2] + M2.M[i][j+1][2] + M2.M[i+1][j+1][2] + M2.M[i+1][j][2])/4.0);
+                end
+             else
+             begin
+                M2.M[i][j][0]:=round((M2.M[i][j-1][0] + M2.M[i-1][j][0] + M2.M[i+1][j][0] + M2.M[i-1][j-1][0] + M2.M[i-1][j+1][0] + M2.M[i+1][j-1][0] + M2.M[i+1][j+1][0])/7.0);
+                M2.M[i][j][1]:=round((M2.M[i][j-1][1] + M2.M[i-1][j][1] + M2.M[i+1][j][1] + M2.M[i-1][j-1][1] + M2.M[i-1][j+1][1] + M2.M[i+1][j-1][1] + M2.M[i+1][j+1][1])/7.0);
+                M2.M[i][j][2]:=round((M2.M[i][j-1][2] + M2.M[i-1][j][2] + M2.M[i+1][j][2] + M2.M[i-1][j-1][2] + M2.M[i-1][j+1][2] + M2.M[i+1][j-1][2] + M2.M[i+1][j+1][2])/7.0);
+             end;
+             j:=j+1;
+          end;
+     i:=i+2;
+  end;
+  StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
+  BM.SetSize(M2.ancho,M2.alto);
+  mat2bm(M2,BM);
   Image1.Picture.Bitmap.Assign(BM);
   //GuardarImagenConFiltroAplicado
   IMaux2.alto := BM.Height;
@@ -1916,7 +2011,8 @@ procedure TForm1.MenuItem15Click(Sender: TObject);
 var
   i,j:Integer;
 begin
-  //GuardarImagenAntesDeAplicarFiltro
+
+         //GuardarImagenAntesDeAplicarFiltro
          IMaux.alto := BM.Height;
          IMaux.ancho := BM.Width;
          SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
@@ -1970,16 +2066,6 @@ begin
          bm2mat(BM,IMaux2);
 end;
 
-procedure TForm1.MenuItem2Click(Sender: TObject);
-begin
-
-end;
-
-procedure TForm1.MenuItem3Click(Sender: TObject);
-begin
-
-end;
-
 procedure TForm1.MenuItem8Click(Sender: TObject);
 var
   i,j,a,b:Integer;
@@ -2023,6 +2109,7 @@ begin
   BM.SetSize(M2.ancho, M2.alto);
   mat2bm(IM, BM);
   Image1.Picture.Bitmap.Assign(BM);
+  StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
   //GuardarImagenConFiltroAplicado
   IMaux2.alto := BM.Height;
   IMaux2.ancho := BM.Width;
@@ -2061,6 +2148,7 @@ begin
   BM.SetSize(M2.ancho, M2.alto);
   mat2bm(IM, BM);
   Image1.Picture.Bitmap.Assign(BM);
+  StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
   //GuardarImagenConFiltroAplicado
   IMaux2.alto := BM.Height;
   IMaux2.ancho := BM.Width;
@@ -2570,6 +2658,7 @@ begin
   mat2bm(IMaux, BM);
   bm2mat(BM,IM);
   Image1.Picture.Bitmap.Assign(BM);
+  StatusBar1.Panels[0].Text := IntToStr(IM.ancho) + 'x' + IntToStr(IM.alto) + 'pixeles';
 end;
 
 procedure TForm1.RehacerClick(Sender: TObject);
@@ -2581,6 +2670,7 @@ begin
   mat2bm(IMaux2, BM);
   bm2mat(BM,IM);
   Image1.Picture.Bitmap.Assign(BM);
+  StatusBar1.Panels[0].Text := IntToStr(IM.ancho) + 'x' + IntToStr(IM.alto) + 'pixeles';
 end;
 
 procedure TForm1.UmbralGrisesClick(Sender: TObject);

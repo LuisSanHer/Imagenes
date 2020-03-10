@@ -101,4 +101,13 @@ object Form5: TForm5
     TabOrder = 9
     Visible = False
   end
+  object RadioButton9: TRadioButton
+    Left = 168
+    Height = 19
+    Top = 124
+    Width = 73
+    Caption = 'Completo'
+    TabOrder = 10
+    Visible = False
+  end
 end

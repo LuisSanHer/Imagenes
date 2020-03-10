@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 603
+  Left = 709
   Height = 616
-  Top = 303
+  Top = 232
   Width = 502
   AllowDropFiles = True
   Caption = 'Ventana principal'
@@ -304,10 +304,8 @@ object Form1: TForm1
     end
     object MenuItem2: TMenuItem
       Caption = 'Geometricos'
-      OnClick = MenuItem2Click
       object MenuItem3: TMenuItem
         Caption = 'Escalado Lazy'
-        OnClick = MenuItem3Click
         object MenuItem8: TMenuItem
           Caption = 'Escalado x2'
           OnClick = MenuItem8Click
@@ -331,6 +329,7 @@ object Form1: TForm1
         Caption = 'Escalado Bi-lineal'
         object MenuItem12: TMenuItem
           Caption = 'Escalado x2'
+          OnClick = MenuItem12Click
         end
         object MenuItem13: TMenuItem
           Caption = 'Escalado /2'
