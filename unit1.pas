@@ -140,6 +140,7 @@ type
     procedure MediaPonderadaClick(Sender: TObject);
     procedure MediaRecortadaClick(Sender: TObject);
     procedure MenuItem10Click(Sender: TObject);
+    procedure MenuItem11Click(Sender: TObject);
     procedure MenuItem12Click(Sender: TObject);
     procedure MenuItem13Click(Sender: TObject);
     procedure MenuItem15Click(Sender: TObject);
@@ -1859,6 +1860,7 @@ begin
           i:=i+2;
   end;
 
+
   i:=1;
   while i < M2.alto do
   begin
@@ -1897,6 +1899,45 @@ begin
   BM.SetSize(M2.ancho,M2.alto);
   mat2bm(M2,BM);
   Image1.Picture.Bitmap.Assign(BM);
+  //GuardarImagenConFiltroAplicado
+  IMaux2.alto := BM.Height;
+  IMaux2.ancho := BM.Width;
+  SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+  bm2mat(BM,IMaux2);
+end;
+
+procedure TForm1.MenuItem11Click(Sender: TObject);
+var
+  i,j,a,b:Integer;
+begin
+  //GuardarImagenAntesDeAplicarFiltro
+  IMaux.alto := BM.Height;
+  IMaux.ancho := BM.Width;
+  SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+  bm2mat(BM,IMaux);
+  //AplicandoFiltro
+  SetLength(M2.M, IM.alto div 2, IM.ancho div 2, 3);
+  M2.alto := IM.alto div 2;
+  M2.ancho := IM.ancho div 2;
+  for i:=1 to IM.alto-2 do
+  begin
+      a := i div 2;
+      for j:=1 to IM.ancho-2 do
+      begin
+          b := j div 2;
+          M2.M[a][b][0] := (IM.M[i-1][j][0] + IM.M[i][j-1][0] + IM.M[i+1][j][0] + IM.M[i][j+1][0])/4.0;
+          M2.M[a][b][1] := (IM.M[i-1][j][1] + IM.M[i][j-1][1] + IM.M[i+1][j][1] + IM.M[i][j+1][1])/4.0;
+          M2.M[a][b][2] := (IM.M[i-1][j][2] + IM.M[i][j-1][2] + IM.M[i+1][j][2] + IM.M[i][j+1][2])/4.0;
+      end;
+  end;
+  SetLength(IM.M, M2.alto, M2.ancho, 3);
+  IM.alto := M2.alto;
+  IM.ancho := M2.ancho;
+  matFull(M2,IM);
+  BM.SetSize(M2.ancho, M2.alto);
+  mat2bm(IM, BM);
+  Image1.Picture.Bitmap.Assign(BM);
+  StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
   //GuardarImagenConFiltroAplicado
   IMaux2.alto := BM.Height;
   IMaux2.ancho := BM.Width;
