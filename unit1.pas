@@ -2064,6 +2064,7 @@ begin
   SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
   bm2mat(BM,IMaux);
   //AplicandoFiltro
+  //Actualizacion
   SetLength(M2.M, IM.alto div 2, IM.ancho div 2, 3);
   M2.alto := IM.alto div 2;
   M2.ancho := IM.ancho div 2;
