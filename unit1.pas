@@ -1917,77 +1917,19 @@ begin
   bm2mat(BM,IMaux);
   //AplicandoFiltro
   SetLength(M2.M, IM.alto div 2, IM.ancho div 2, 3);
-    M2.alto := IM.alto div 2;
-    M2.ancho := IM.ancho div 2;
-    for i:=0 to IM.alto-1 do
-    begin
-        a := i div 2;
-        for j:=0 to IM.ancho-1 do
-        begin
-            b := j div 2;
-            if i=0 then
-            begin
-              if j=0 then
-              begin
-                M2.M[a][b][0] := round((IM.M[i][j+1][0] + IM.M[i+1][j][0])/2.0);
-                M2.M[a][b][1] := round((IM.M[i][j+1][1] + IM.M[i+1][j][1])/2.0);
-                M2.M[a][b][2] := round((IM.M[i][j+1][2] + IM.M[i+1][j][2])/2.0);
-              end
-              else if j=IM.ancho-1 then
-              begin
-                M2.M[a][b][0] := round((IM.M[i][j-1][0] + IM.M[i+1][j][0])/2.0);
-                M2.M[a][b][1] := round((IM.M[i][j-1][1] + IM.M[i+1][j][1])/2.0);
-                M2.M[a][b][2] := round((IM.M[i][j-1][2] + IM.M[i+1][j][2])/2.0);
-              end
-              else
-              begin
-                M2.M[a][b][0] := round((IM.M[i][j-1][0] + IM.M[i][j+1][0] + IM.M[i+1][j][0])/3.0);
-                M2.M[a][b][1] := round((IM.M[i][j-1][1] + IM.M[i][j+1][1] + IM.M[i+1][j][1])/3.0);
-                M2.M[a][b][2] := round((IM.M[i][j-1][2] + IM.M[i][j+1][2] + IM.M[i+1][j][2])/3.0);
-              end;
-            end
-
-            else if i=IM.alto-1 then
-            begin
-              if j=0 then
-              begin
-                M2.M[a][b][0] := round((IM.M[i][j+1][0] + IM.M[i-1][j][0])/2.0);
-                M2.M[a][b][1] := round((IM.M[i][j+1][1] + IM.M[i-1][j][1])/2.0);
-                M2.M[a][b][2] := round((IM.M[i][j+1][2] + IM.M[i-1][j][2])/2.0);
-              end
-              else if j=IM.ancho-1 then
-              begin
-                M2.M[a][b][0] := round((IM.M[i][j-1][0] + IM.M[i-1][j][0])/2.0);
-                M2.M[a][b][1] := round((IM.M[i][j-1][1] + IM.M[i-1][j][1])/2.0);
-                M2.M[a][b][2] := round((IM.M[i][j-1][2] + IM.M[i-1][j][2])/2.0);
-              end
-              else
-              begin
-                M2.M[a][b][0] := round((IM.M[i][j-1][0] + IM.M[i][j+1][0] + IM.M[i-1][j][0])/3.0);
-                M2.M[a][b][1] := round((IM.M[i][j-1][1] + IM.M[i][j+1][1] + IM.M[i-1][j][1])/3.0);
-                M2.M[a][b][2] := round((IM.M[i][j-1][2] + IM.M[i][j+1][2] + IM.M[i-1][j][2])/3.0);
-              end;
-            end
-            else if j=0 then
-            begin
-              M2.M[a][b][0] := round((IM.M[i-1][j][0] + IM.M[i+1][j][0] + IM.M[i][j+1][0])/3.0);
-              M2.M[a][b][1] := round((IM.M[i-1][j][1] + IM.M[i+1][j][1] + IM.M[i][j+1][1])/3.0);
-              M2.M[a][b][2] := round((IM.M[i-1][j][2] + IM.M[i+1][j][2] + IM.M[i][j+1][2])/3.0);
-            end
-            else if j=IM.ancho-1 then
-            begin
-              M2.M[a][b][0] := round((IM.M[i-1][j][0] + IM.M[i+1][j][0] + IM.M[i][j-1][0])/3.0);
-              M2.M[a][b][1] := round((IM.M[i-1][j][1] + IM.M[i+1][j][1] + IM.M[i][j-1][1])/3.0);
-              M2.M[a][b][2] := round((IM.M[i-1][j][2] + IM.M[i+1][j][2] + IM.M[i][j-1][2])/3.0);
-            end
-            else
-            begin
-              M2.M[a][b][0] :=round((IM.M[i-1][j][0] + IM.M[i][j-1][0] + IM.M[i+1][j][0] + IM.M[i][j+1][0])/4.0);
-              M2.M[a][b][1] :=round((IM.M[i-1][j][1] + IM.M[i][j-1][1] + IM.M[i+1][j][1] + IM.M[i][j+1][1])/4.0);
-              M2.M[a][b][2] :=round((IM.M[i-1][j][2] + IM.M[i][j-1][2] + IM.M[i+1][j][2] + IM.M[i][j+1][2])/4.0);
-            end;
-        end;
-    end;
+  M2.alto := IM.alto div 2;
+  M2.ancho := IM.ancho div 2;
+  for i:=1 to IM.alto-2 do
+  begin
+      a := i div 2;
+      for j:=1 to IM.ancho-2 do
+      begin
+          b := j div 2;
+          M2.M[a][b][0] := (IM.M[i-1][j][0] + IM.M[i][j-1][0] + IM.M[i+1][j][0] + IM.M[i][j+1][0])/4.0;
+          M2.M[a][b][1] := (IM.M[i-1][j][1] + IM.M[i][j-1][1] + IM.M[i+1][j][1] + IM.M[i][j+1][1])/4.0;
+          M2.M[a][b][2] := (IM.M[i-1][j][2] + IM.M[i][j-1][2] + IM.M[i+1][j][2] + IM.M[i][j+1][2])/4.0;
+      end;
+  end;
   SetLength(IM.M, M2.alto, M2.ancho, 3);
   IM.alto := M2.alto;
   IM.ancho := M2.ancho;
@@ -2113,6 +2055,8 @@ begin
 end;
 
 procedure TForm1.MenuItem13Click(Sender: TObject);
+var
+  i,j,a,b:Integer;
 begin
   //GuardarImagenAntesDeAplicarFiltro
   IMaux.alto := BM.Height;
