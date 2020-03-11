@@ -77,6 +77,8 @@ type
     OperadorLapGaussiana: TMenuItem;
     OperadorLaplaciano: TMenuItem;
     PromedioDireccional: TMenuItem;
+    Izquierda: TRadioButton;
+    Derecha: TRadioButton;
     Suavizado: TMenuItem;
     Sepia: TMenuItem;
     ReduccionGrises: TMenuItem;
@@ -145,6 +147,7 @@ type
     procedure MenuItem13Click(Sender: TObject);
     procedure MenuItem15Click(Sender: TObject);
     procedure MenuItem16Click(Sender: TObject);
+    procedure MenuItem17Click(Sender: TObject);
     procedure MenuItem8Click(Sender: TObject);
     procedure MenuItem9Click(Sender: TObject);
     procedure NegativoClick(Sender: TObject);
@@ -2150,6 +2153,56 @@ begin
          IMaux2.ancho := BM.Width;
          SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
          bm2mat(BM,IMaux2);
+end;
+
+procedure TForm1.MenuItem17Click(Sender: TObject);
+var
+  i,j : Integer;
+begin
+  //GuardarImagenAntesDeAplicarFiltro
+  IMaux.alto := BM.Height;
+  IMaux.ancho := BM.Width;
+  SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+  bm2mat(BM,IMaux);
+  //AplicandoFiltro
+  SetLength(M2.M,IM.ancho,IM.alto,3);
+  M2.ancho:=IM.alto;
+  M2.alto:=IM.ancho;
+  if Izquierda.Checked then
+  begin
+    for i:=0 to IM.alto-1 do
+           begin
+               for j:=0 to IM.ancho-1 do
+               begin
+                 M2.M[M2.alto-1-j][i][0]:=IM.M[i][j][0];
+                 M2.M[M2.alto-1-j][i][1]:=IM.M[i][j][1];
+                 M2.M[M2.alto-1-j][i][2]:=IM.M[i][j][2];
+               end;
+           end;
+    BM.SetSize(M2.ancho,M2.alto);
+    mat2bm(M2,BM);
+    Image1.Picture.Bitmap.Assign(BM);
+  end
+  else if Derecha.Checked then
+  begin
+     for i:=0 to IM.alto-1 do
+     begin
+       for j:=0 to IM.ancho-1 do
+       begin
+          M2.M[j][M2.ancho-1-i][0]:=IM.M[i][j][0];
+          M2.M[j][M2.ancho-1-i][1]:=IM.M[i][j][1];
+          M2.M[j][M2.ancho-1-i][2]:=IM.M[i][j][2];
+       end;
+     end;
+     BM.SetSize(M2.ancho,M2.alto);
+     mat2bm(M2,BM);
+     Image1.Picture.Bitmap.Assign(BM);
+  end;
+  //GuardarImagenConFiltroAplicado
+  IMaux2.alto := BM.Height;
+  IMaux2.ancho := BM.Width;
+  SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+  bm2mat(BM,IMaux2);
 end;
 
 procedure TForm1.MenuItem8Click(Sender: TObject);
