@@ -1860,7 +1860,10 @@ begin
           i:=i+2;
   end;
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 0508de796fa365fec701009fd916553064a0c847
   i:=1;
   while i < M2.alto do
   begin

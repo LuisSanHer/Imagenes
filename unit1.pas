@@ -2055,8 +2055,6 @@ begin
 end;
 
 procedure TForm1.MenuItem13Click(Sender: TObject);
-var
-  i,j,a,b:Integer;
 begin
   //GuardarImagenAntesDeAplicarFiltro
   IMaux.alto := BM.Height;
