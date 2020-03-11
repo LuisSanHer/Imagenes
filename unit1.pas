@@ -141,6 +141,7 @@ type
     procedure MediaRecortadaClick(Sender: TObject);
     procedure MenuItem10Click(Sender: TObject);
     procedure MenuItem12Click(Sender: TObject);
+    procedure MenuItem13Click(Sender: TObject);
     procedure MenuItem15Click(Sender: TObject);
     procedure MenuItem16Click(Sender: TObject);
     procedure MenuItem8Click(Sender: TObject);
@@ -2010,6 +2011,11 @@ begin
   IMaux2.ancho := BM.Width;
   SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
   bm2mat(BM,IMaux2);
+end;
+
+procedure TForm1.MenuItem13Click(Sender: TObject);
+begin
+
 end;
 
 procedure TForm1.MenuItem15Click(Sender: TObject);
