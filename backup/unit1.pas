@@ -140,7 +140,9 @@ type
     procedure MediaPonderadaClick(Sender: TObject);
     procedure MediaRecortadaClick(Sender: TObject);
     procedure MenuItem10Click(Sender: TObject);
+    procedure MenuItem11Click(Sender: TObject);
     procedure MenuItem12Click(Sender: TObject);
+    procedure MenuItem13Click(Sender: TObject);
     procedure MenuItem15Click(Sender: TObject);
     procedure MenuItem16Click(Sender: TObject);
     procedure MenuItem8Click(Sender: TObject);
@@ -1792,8 +1794,7 @@ end;
 
 procedure TForm1.MenuItem10Click(Sender: TObject);
 var
-  i,j,x,y,a,b,cont,c: Integer;
-  sumaR,sumaB,sumaG: Double;
+  i,j : Integer;
 begin
   //GuardarImagenAntesDeAplicarFiltro
   IMaux.alto := BM.Height;
@@ -1858,39 +1859,85 @@ begin
           end;
           i:=i+2;
   end;
-  SetLength(visitados,IM.alto*2,IM.ancho*2);
-  for i:=1 to IM.alto-2 do
+
+
+  i:=1;
+  while i < M2.alto do
   begin
-      x := i*2;
-      for j:=1 to IM.ancho-2 do
-      begin
-          cont := 0; sumaR := 0; sumaG := 0; sumaB := 0; c:=0;
-          y := j*2;
-          for a:= -1 to 1 do
+     j:=1;
+          while j < M2.ancho do
           begin
-             for b:= -1 to 1 do
+             if j= M2.ancho-1 then
              begin
-                If ( (cont MOD 2=0)  AND (cont<>0) AND (visitados[x+a][y+b]=1) ) then
+                if (i=M2.alto-1) and (j=M2.ancho-1)  then
+                   M2.M[i][j][0]:=round((M2.M[i][j-1][0]+ M2.M[i-1][j][0])/2.0)
+                else
                 begin
-                  sumaR := sumaR + M2.M[x+a][y+b][0];
-                  sumaG := sumaG + M2.M[x+a][y+b][1];
-                  sumaB := sumaB + M2.M[x+a][y+b][2];
-                  c := c+1;
+                     M2.M[i][j][0]:=round((M2.M[i][j-1][0] + M2.M[i+1][j][0] + M2.M[i-1][j][0])/3.0);
+                     M2.M[i][j][1]:=round((M2.M[i][j-1][1] + M2.M[i+1][j][1] + M2.M[i-1][j][1])/3.0);
+                     M2.M[i][j][2]:=round((M2.M[i][j-1][2] + M2.M[i+1][j][2] + M2.M[i-1][j][2])/3.0);
                 end;
-                cont := cont + 1;
+             end
+             else if i=M2.alto-1 then
+             begin
+                M2.M[i][j][0]:=round((M2.M[i][j-1][0] + M2.M[i][j+1][0] + M2.M[i-1][j][0])/3.0);
+                M2.M[i][j][1]:=round((M2.M[i][j-1][1] + M2.M[i][j+1][1] + M2.M[i-1][j][1])/3.0);
+                M2.M[i][j][2]:=round((M2.M[i][j-1][2] + M2.M[i][j+1][2] + M2.M[i-1][j][2])/3.0);
+             end
+             else
+             begin
+                M2.M[i][j][0]:=round((M2.M[i][j-1][0] + M2.M[i][j+1][0] + M2.M[i+1][j][0] + M2.M[i-1][j][0])/4.0);
+                M2.M[i][j][1]:=round((M2.M[i][j-1][1] + M2.M[i][j+1][1] + M2.M[i+1][j][1] + M2.M[i-1][j][1])/4.0);
+                M2.M[i][j][2]:=round((M2.M[i][j-1][2] + M2.M[i][j+1][2] + M2.M[i+1][j][2] + M2.M[i-1][j][2])/4.0);
              end;
+             j:=j+2;
           end;
-          M2.M[x][y][0]:= sumaR/c;
-          M2.M[x][y][1]:= sumaG/c;
-          M2.M[x][y][2]:= sumaB/c;
-          visitados[x][y] := 1;
-      end;
+          i:=i+2;
   end;
 
   StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
   BM.SetSize(M2.ancho,M2.alto);
   mat2bm(M2,BM);
   Image1.Picture.Bitmap.Assign(BM);
+  //GuardarImagenConFiltroAplicado
+  IMaux2.alto := BM.Height;
+  IMaux2.ancho := BM.Width;
+  SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+  bm2mat(BM,IMaux2);
+end;
+
+procedure TForm1.MenuItem11Click(Sender: TObject);
+var
+  i,j,a,b:Integer;
+begin
+  //GuardarImagenAntesDeAplicarFiltro
+  IMaux.alto := BM.Height;
+  IMaux.ancho := BM.Width;
+  SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+  bm2mat(BM,IMaux);
+  //AplicandoFiltro
+  SetLength(M2.M, IM.alto div 2, IM.ancho div 2, 3);
+  M2.alto := IM.alto div 2;
+  M2.ancho := IM.ancho div 2;
+  for i:=1 to IM.alto-2 do
+  begin
+      a := i div 2;
+      for j:=1 to IM.ancho-2 do
+      begin
+          b := j div 2;
+          M2.M[a][b][0] := (IM.M[i-1][j][0] + IM.M[i][j-1][0] + IM.M[i+1][j][0] + IM.M[i][j+1][0])/4.0;
+          M2.M[a][b][1] := (IM.M[i-1][j][1] + IM.M[i][j-1][1] + IM.M[i+1][j][1] + IM.M[i][j+1][1])/4.0;
+          M2.M[a][b][2] := (IM.M[i-1][j][2] + IM.M[i][j-1][2] + IM.M[i+1][j][2] + IM.M[i][j+1][2])/4.0;
+      end;
+  end;
+  SetLength(IM.M, M2.alto, M2.ancho, 3);
+  IM.alto := M2.alto;
+  IM.ancho := M2.ancho;
+  matFull(M2,IM);
+  BM.SetSize(M2.ancho, M2.alto);
+  mat2bm(IM, BM);
+  Image1.Picture.Bitmap.Assign(BM);
+  StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
   //GuardarImagenConFiltroAplicado
   IMaux2.alto := BM.Height;
   IMaux2.ancho := BM.Width;
@@ -2000,6 +2047,45 @@ begin
   BM.SetSize(M2.ancho,M2.alto);
   mat2bm(M2,BM);
   Image1.Picture.Bitmap.Assign(BM);
+  //GuardarImagenConFiltroAplicado
+  IMaux2.alto := BM.Height;
+  IMaux2.ancho := BM.Width;
+  SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+  bm2mat(BM,IMaux2);
+end;
+
+procedure TForm1.MenuItem13Click(Sender: TObject);
+var
+  i,j,a,b:Integer;
+begin
+  //GuardarImagenAntesDeAplicarFiltro
+  IMaux.alto := BM.Height;
+  IMaux.ancho := BM.Width;
+  SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+  bm2mat(BM,IMaux);
+  //AplicandoFiltro
+  SetLength(M2.M, IM.alto div 2, IM.ancho div 2, 3);
+  M2.alto := IM.alto div 2;
+  M2.ancho := IM.ancho div 2;
+  for i:=1 to IM.alto-2 do
+  begin
+      a := i div 2;
+      for j:=1 to IM.ancho-2 do
+      begin
+          b := j div 2;
+          M2.M[a][b][0] := (IM.M[i-1][j][0] + IM.M[i][j-1][0] + IM.M[i+1][j][0] + IM.M[i][j+1][0] + IM.M[i-1][j-1][0] + IM.M[i-1][j+1][0] + IM.M[i-1][j-1][0] + IM.M[i+1][j+1][0])/8.0;
+          M2.M[a][b][1] := (IM.M[i-1][j][1] + IM.M[i][j-1][1] + IM.M[i+1][j][1] + IM.M[i][j+1][1] + IM.M[i-1][j-1][1] + IM.M[i-1][j+1][1] + IM.M[i-1][j-1][1] + IM.M[i+1][j+1][1])/8.0;
+          M2.M[a][b][2] := (IM.M[i-1][j][2] + IM.M[i][j-1][2] + IM.M[i+1][j][2] + IM.M[i][j+1][2] + IM.M[i-1][j-1][2] + IM.M[i-1][j+1][2] + IM.M[i-1][j-1][2] + IM.M[i+1][j+1][2])/8.0;
+      end;
+  end;
+  SetLength(IM.M, M2.alto, M2.ancho, 3);
+  IM.alto := M2.alto;
+  IM.ancho := M2.ancho;
+  matFull(M2,IM);
+  BM.SetSize(M2.ancho, M2.alto);
+  mat2bm(IM, BM);
+  Image1.Picture.Bitmap.Assign(BM);
+  StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
   //GuardarImagenConFiltroAplicado
   IMaux2.alto := BM.Height;
   IMaux2.ancho := BM.Width;

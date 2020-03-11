@@ -1,21 +1,21 @@
 object Form1: TForm1
   Left = 709
   Height = 616
-  Top = 232
+  Top = 115
   Width = 502
   AllowDropFiles = True
   Caption = 'Ventana principal'
-  ClientHeight = 577
+  ClientHeight = 591
   ClientWidth = 502
   Menu = MainMenu1
   OnClick = FormClick
   OnCreate = FormCreate
-  LCLVersion = '2.0.6.0'
+  LCLVersion = '2.0.2.0'
   object ScrollBox1: TScrollBox
     Left = 11
-    Height = 139
+    Height = 137
     Top = 37
-    Width = 139
+    Width = 137
     HorzScrollBar.Page = 135
     VertScrollBar.Page = 135
     AutoSize = True
@@ -37,8 +37,8 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 554
+    Height = 19
+    Top = 572
     Width = 502
     Panels = <    
       item
@@ -323,6 +323,7 @@ object Form1: TForm1
         end
         object MenuItem11: TMenuItem
           Caption = 'Escalado /2'
+          OnClick = MenuItem11Click
         end
       end
       object MenuItem5: TMenuItem
@@ -333,6 +334,7 @@ object Form1: TForm1
         end
         object MenuItem13: TMenuItem
           Caption = 'Escalado /2'
+          OnClick = MenuItem13Click
         end
         object MenuItem14: TMenuItem
           Caption = 'Escalado libre'
