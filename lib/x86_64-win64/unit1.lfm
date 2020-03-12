@@ -1,12 +1,12 @@
 object Form1: TForm1
   Left = 709
-  Height = 616
-  Top = 115
-  Width = 502
+  Height = 684
+  Top = 199
+  Width = 596
   AllowDropFiles = True
   Caption = 'Ventana principal'
-  ClientHeight = 577
-  ClientWidth = 502
+  ClientHeight = 664
+  ClientWidth = 596
   Menu = MainMenu1
   OnClick = FormClick
   OnCreate = FormCreate
@@ -38,8 +38,8 @@ object Form1: TForm1
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
-    Top = 554
-    Width = 502
+    Top = 641
+    Width = 596
     Panels = <    
       item
         Width = 100
@@ -57,7 +57,7 @@ object Form1: TForm1
     Left = 0
     Height = 26
     Top = 0
-    Width = 502
+    Width = 596
     Caption = 'ToolBar1'
     Images = ImageList1
     ParentFont = False
@@ -355,9 +355,11 @@ object Form1: TForm1
         Caption = 'Rotacion'
         object MenuItem17: TMenuItem
           Caption = '90 grados'
+          OnClick = MenuItem17Click
         end
         object MenuItem18: TMenuItem
           Caption = '180 grados'
+          OnClick = MenuItem18Click
         end
         object MenuItem19: TMenuItem
           Caption = 'Rotacion libre'

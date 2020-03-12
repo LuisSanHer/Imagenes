@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ExtDlgs,
   ExtCtrls, ComCtrls, StdCtrls, Global, Math, VentanaConfig, Histograma,
-  Ecualizador, deteccionbordesconfig;
+  Ecualizador, deteccionbordesconfig,Geometricos;
 
 type
 
@@ -77,8 +77,6 @@ type
     OperadorLapGaussiana: TMenuItem;
     OperadorLaplaciano: TMenuItem;
     PromedioDireccional: TMenuItem;
-    Izquierda: TRadioButton;
-    Derecha: TRadioButton;
     Suavizado: TMenuItem;
     Sepia: TMenuItem;
     ReduccionGrises: TMenuItem;
@@ -148,6 +146,7 @@ type
     procedure MenuItem15Click(Sender: TObject);
     procedure MenuItem16Click(Sender: TObject);
     procedure MenuItem17Click(Sender: TObject);
+    procedure MenuItem18Click(Sender: TObject);
     procedure MenuItem8Click(Sender: TObject);
     procedure MenuItem9Click(Sender: TObject);
     procedure NegativoClick(Sender: TObject);
@@ -2157,52 +2156,87 @@ end;
 
 procedure TForm1.MenuItem17Click(Sender: TObject);
 var
-  i,j : Integer;
+    i,j : Integer;
 begin
-  //GuardarImagenAntesDeAplicarFiltro
-  IMaux.alto := BM.Height;
-  IMaux.ancho := BM.Width;
-  SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
-  bm2mat(BM,IMaux);
-  //AplicandoFiltro
-  SetLength(M2.M,IM.ancho,IM.alto,3);
-  M2.ancho:=IM.alto;
-  M2.alto:=IM.ancho;
-  if Izquierda.Checked then
-  begin
-    for i:=0 to IM.alto-1 do
+    //GuardarImagenAntesDeAplicarFiltro
+    IMaux.alto := BM.Height;
+    IMaux.ancho := BM.Width;
+    SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+    bm2mat(BM,IMaux);
+    Form6.ShowModal;
+    //Aplicando filtro
+    SetLength(M2.M,IM.ancho,IM.alto,3);
+    M2.ancho:=IM.alto;
+    M2.alto:=IM.ancho;
+    if Form6.Izquierda.Checked then
+    begin
+      for i:=0 to IM.alto-1 do
+      begin
+           for j:=0 to IM.ancho-1 do
            begin
-               for j:=0 to IM.ancho-1 do
-               begin
-                 M2.M[M2.alto-1-j][i][0]:=IM.M[i][j][0];
-                 M2.M[M2.alto-1-j][i][1]:=IM.M[i][j][1];
-                 M2.M[M2.alto-1-j][i][2]:=IM.M[i][j][2];
-               end;
+                M2.M[M2.alto-1-j][i][0]:=IM.M[i][j][0];
+                M2.M[M2.alto-1-j][i][1]:=IM.M[i][j][1];
+                M2.M[M2.alto-1-j][i][2]:=IM.M[i][j][2];
            end;
-    BM.SetSize(M2.ancho,M2.alto);
-    mat2bm(M2,BM);
+      end;
+    end
+    else if Form6.Derecha.Checked then
+    begin
+         for i:=0 to IM.alto-1 do
+         begin
+           for j:=0 to IM.ancho-1 do
+           begin
+              M2.M[j][M2.ancho-1-i][0]:=IM.M[i][j][0];
+              M2.M[j][M2.ancho-1-i][1]:=IM.M[i][j][1];
+              M2.M[j][M2.ancho-1-i][2]:=IM.M[i][j][2];
+           end;
+         end;
+    end;
+    SetLength(IM.M, M2.alto, M2.ancho, 3);
+    IM.alto := M2.alto;
+    IM.ancho := M2.ancho;
+    matFull(M2,IM);
+    BM.SetSize(M2.ancho, M2.alto);
+    mat2bm(IM, BM);
     Image1.Picture.Bitmap.Assign(BM);
-  end
-  else if Derecha.Checked then
-  begin
-     for i:=0 to IM.alto-1 do
-     begin
-       for j:=0 to IM.ancho-1 do
-       begin
-          M2.M[j][M2.ancho-1-i][0]:=IM.M[i][j][0];
-          M2.M[j][M2.ancho-1-i][1]:=IM.M[i][j][1];
-          M2.M[j][M2.ancho-1-i][2]:=IM.M[i][j][2];
-       end;
-     end;
-     BM.SetSize(M2.alto,M2.ancho);
-     mat2bm(M2,BM);
-     Image1.Picture.Bitmap.Assign(BM);
-  end;
-  //GuardarImagenConFiltroAplicado
-  IMaux2.alto := BM.Height;
-  IMaux2.ancho := BM.Width;
-  SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
-  bm2mat(BM,IMaux2);
+    //GuardarImagenConFiltroAplicado
+    IMaux2.alto := BM.Height;
+    IMaux2.ancho := BM.Width;
+    SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+    bm2mat(BM,IMaux2);
+end;
+
+procedure TForm1.MenuItem18Click(Sender: TObject);
+var
+  i,j:Integer;
+begin
+    //GuardarImagenAntesDeAplicarFiltro
+    IMaux.alto := BM.Height;
+    IMaux.ancho := BM.Width;
+    SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+    bm2mat(BM,IMaux);
+    for i:=0 to IM.alto-1 do
+    begin
+         for j:=0 to IM.ancho-1 do
+         begin
+            M2.M[M2.alto-1-i][M2.ancho-1-j][0]:=IM.M[i][j][0];
+            M2.M[M2.alto-1-i][M2.ancho-1-j][1]:=IM.M[i][j][1];
+            M2.M[M2.alto-1-i][M2.ancho-1-j][2]:=IM.M[i][j][2];
+         end;
+    end;
+    SetLength(IM.M, M2.alto, M2.ancho, 3);
+    IM.alto := M2.alto;
+    IM.ancho := M2.ancho;
+    matFull(M2,IM);
+    BM.SetSize(M2.ancho, M2.alto);
+    mat2bm(IM, BM);
+    Image1.Picture.Bitmap.Assign(BM);
+    StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
+    //GuardarImagenConFiltroAplicado
+    IMaux2.alto := BM.Height;
+    IMaux2.ancho := BM.Width;
+    SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+    bm2mat(BM,IMaux2);
 end;
 
 procedure TForm1.MenuItem8Click(Sender: TObject);
