@@ -345,7 +345,7 @@ object Form1: TForm1
       object MenuItem6: TMenuItem
         Caption = 'Reflexion'
         object ReflexionHorizontal: TMenuItem
-          Caption = 'ReflexionHorizontal'
+          Caption = 'Horizontal'
           OnClick = ReflexionHorizontalClick
         end
         object ReflexionVertical: TMenuItem

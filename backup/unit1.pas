@@ -2761,12 +2761,25 @@ begin
             end;
         end;
         SetLength(IM.M, M2.alto, M2.ancho, 3);
-        IM.ancho:=M2.ancho;
-        IM.alto:=M2.alto;
-        mat2mat(M2, IM);
-        BM.SetSize(M2.ancho,M2.alto);
+        IM.alto := M2.alto;
+        IM.ancho := M2.ancho;
+        matFull(M2,IM);
+        BM.SetSize(M2.ancho, M2.alto);
         mat2bm(IM, BM);
         Image1.Picture.Bitmap.Assign(BM);
+        StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
+        //GuardarImagenConFiltroAplicado
+        IMaux2.alto := BM.Height;
+        IMaux2.ancho := BM.Width;
+        SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+        bm2mat(BM,IMaux2);
+        //Reiniciando formulario externo
+        Form6.Porcentaje.Visible:= false;
+        Form6.Label1.Visible:= false;
+        Form6.Izquierda.Visible:= true;
+        Form6.Derecha.Visible:= true;
+        Form6.Porcentaje.Position:=0;
+        Form6.Label1.Caption:='0';
 end;
 
 procedure TForm1.SepiaClick(Sender: TObject);
