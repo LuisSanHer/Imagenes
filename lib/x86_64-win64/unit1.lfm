@@ -302,67 +302,70 @@ object Form1: TForm1
         end
       end
     end
-    object MenuItem2: TMenuItem
+    object FiltrosGeometricos: TMenuItem
       Caption = 'Geometricos'
+      Enabled = False
       object MenuItem3: TMenuItem
         Caption = 'Escalado Lazy'
-        object MenuItem8: TMenuItem
+        object EscaladoLazyx2: TMenuItem
           Caption = 'Escalado x2'
-          OnClick = MenuItem8Click
+          OnClick = EscaladoLazyx2Click
         end
-        object MenuItem9: TMenuItem
+        object EscaladoLazyE2: TMenuItem
           Caption = 'Escalado /2'
-          OnClick = MenuItem9Click
+          OnClick = EscaladoLazyE2Click
+        end
+        object EscaladoLazyLibre: TMenuItem
+          Caption = 'Escalado libre'
+          OnClick = EscaladoLazyLibreClick
         end
       end
       object MenuItem4: TMenuItem
         Caption = 'Escalado Lineal'
-        object MenuItem10: TMenuItem
+        object EscaladoLinealx2: TMenuItem
           Caption = 'Escalado x2'
-          OnClick = MenuItem10Click
+          OnClick = EscaladoLinealx2Click
         end
-        object MenuItem11: TMenuItem
+        object EscaladoLinealE2: TMenuItem
           Caption = 'Escalado /2'
-          OnClick = MenuItem11Click
+          OnClick = EscaladoLinealE2Click
         end
       end
       object MenuItem5: TMenuItem
         Caption = 'Escalado Bi-lineal'
-        object MenuItem12: TMenuItem
+        object EscaladoBiLix2: TMenuItem
           Caption = 'Escalado x2'
-          OnClick = MenuItem12Click
+          OnClick = EscaladoBiLix2Click
         end
-        object MenuItem13: TMenuItem
+        object EscaladoBiLiE2: TMenuItem
           Caption = 'Escalado /2'
-          OnClick = MenuItem13Click
-        end
-        object MenuItem14: TMenuItem
-          Caption = 'Escalado libre'
+          OnClick = EscaladoBiLiE2Click
         end
       end
       object MenuItem6: TMenuItem
         Caption = 'Reflexion'
-        object MenuItem15: TMenuItem
-          Caption = 'Horizontal'
-          OnClick = MenuItem15Click
+        object ReflexionHorizontal: TMenuItem
+          Caption = 'ReflexionHorizontal'
+          OnClick = ReflexionHorizontalClick
         end
-        object MenuItem16: TMenuItem
+        object ReflexionVertical: TMenuItem
           Caption = 'Vertical'
-          OnClick = MenuItem16Click
+          OnClick = ReflexionVerticalClick
         end
       end
       object MenuItem7: TMenuItem
         Caption = 'Rotacion'
-        object MenuItem17: TMenuItem
+        object Rotacion90g: TMenuItem
           Caption = '90 grados'
-          OnClick = MenuItem17Click
+          OnClick = Rotacion90gClick
         end
-        object MenuItem18: TMenuItem
+        object Rotacion180g: TMenuItem
           Caption = '180 grados'
-          OnClick = MenuItem18Click
+          OnClick = Rotacion180gClick
         end
-        object MenuItem19: TMenuItem
+        object RotacionLibre: TMenuItem
           Caption = 'Rotacion libre'
+          OnClick = RotacionLibreClick
         end
       end
     end

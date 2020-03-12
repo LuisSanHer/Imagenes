@@ -56,24 +56,24 @@ type
     GaussianaFuerte: TMenuItem;
     GaussianaDebil: TMenuItem;
     FiltroPrewitt: TMenuItem;
-    MenuItem10: TMenuItem;
-    MenuItem11: TMenuItem;
-    MenuItem12: TMenuItem;
-    MenuItem13: TMenuItem;
-    MenuItem14: TMenuItem;
-    MenuItem15: TMenuItem;
-    MenuItem16: TMenuItem;
-    MenuItem17: TMenuItem;
-    MenuItem18: TMenuItem;
-    MenuItem19: TMenuItem;
-    MenuItem2: TMenuItem;
+    EscaladoLinealx2: TMenuItem;
+    EscaladoLinealE2: TMenuItem;
+    EscaladoBiLix2: TMenuItem;
+    EscaladoBiLiE2: TMenuItem;
+    EscaladoLazyLibre: TMenuItem;
+    ReflexionHorizontal: TMenuItem;
+    ReflexionVertical: TMenuItem;
+    Rotacion90g: TMenuItem;
+    Rotacion180g: TMenuItem;
+    RotacionLibre: TMenuItem;
+    FiltrosGeometricos: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
-    MenuItem8: TMenuItem;
-    MenuItem9: TMenuItem;
+    EscaladoLazyx2: TMenuItem;
+    EscaladoLazyE2: TMenuItem;
     OperadorLapGaussiana: TMenuItem;
     OperadorLaplaciano: TMenuItem;
     PromedioDireccional: TMenuItem;
@@ -139,20 +139,22 @@ type
     procedure MedianaClick(Sender: TObject);
     procedure MediaPonderadaClick(Sender: TObject);
     procedure MediaRecortadaClick(Sender: TObject);
-    procedure MenuItem10Click(Sender: TObject);
-    procedure MenuItem11Click(Sender: TObject);
-    procedure MenuItem12Click(Sender: TObject);
-    procedure MenuItem13Click(Sender: TObject);
-    procedure MenuItem15Click(Sender: TObject);
-    procedure MenuItem16Click(Sender: TObject);
-    procedure MenuItem17Click(Sender: TObject);
-    procedure MenuItem18Click(Sender: TObject);
-    procedure MenuItem8Click(Sender: TObject);
-    procedure MenuItem9Click(Sender: TObject);
+    procedure EscaladoLinealx2Click(Sender: TObject);
+    procedure EscaladoLinealE2Click(Sender: TObject);
+    procedure EscaladoBiLix2Click(Sender: TObject);
+    procedure EscaladoBiLiE2Click(Sender: TObject);
+    procedure EscaladoLazyLibreClick(Sender: TObject);
+    procedure ReflexionHorizontalClick(Sender: TObject);
+    procedure ReflexionVerticalClick(Sender: TObject);
+    procedure Rotacion90gClick(Sender: TObject);
+    procedure Rotacion180gClick(Sender: TObject);
+    procedure EscaladoLazyx2Click(Sender: TObject);
+    procedure EscaladoLazyE2Click(Sender: TObject);
     procedure NegativoClick(Sender: TObject);
     procedure OperadorLapGaussianaClick(Sender: TObject);
     procedure OperadorLaplacianoClick(Sender: TObject);
     procedure PromedioDireccionalClick(Sender: TObject);
+    procedure RotacionLibreClick(Sender: TObject);
     procedure SepiaClick(Sender: TObject);
     procedure PolinomialClick(Sender: TObject);
     procedure ScrollBox1Click(Sender: TObject);
@@ -203,6 +205,7 @@ begin
     StatusBar1.Panels[0].Text :=  IntToStr(BM.Width) + ' x ' +IntToStr(BM.Height) + ' píxeles';
     FiltrosPixel.Enabled:=True;
     FiltrosRegion.Enabled:=True;
+    FiltrosGeometricos.Enabled:= True;
     Herramientas.Enabled:=True;
     // Crear espacio en memoria para la imagen
     IM.alto := BM.Height;
@@ -516,7 +519,7 @@ begin
      end;
      //Llenando matriz KxK
      k := 3;
-     //MKxK para horizontal
+     //MKxK para ReflexionHorizontal
      if (Form5.RadioButton1.Checked) then
      begin
        MkxK[0][0]:=  1; MkxK[0][1]:=  power(2, 0.5); MkxK[0][2]:=  1;
@@ -823,7 +826,7 @@ var
        end;
        //Llenando matriz KxK
        k := 3;
-       //MKxK para horizontal
+       //MKxK para ReflexionHorizontal
        if (Form5.RadioButton1.Checked) then
        begin
          MkxK[0][0]:= -1; MkxK[0][1]:=0; MkxK[0][2]:=1;
@@ -921,7 +924,7 @@ var
        end;
        //Llenando matriz KxK
        k := 3;
-       //MKxK para horizontal
+       //MKxK para ReflexionHorizontal
        if (Form5.RadioButton1.Checked) then
        begin
          MkxK[0][0]:= -1; MkxK[0][1]:=0; MkxK[0][2]:=0;
@@ -1019,7 +1022,7 @@ var
        end;
        //Llenando matriz KxK
        k := 3;
-       //MKxK para horizontal
+       //MKxK para ReflexionHorizontal
        if (Form5.RadioButton1.Checked) then
        begin
          MkxK[0][0]:= -1; MkxK[0][1]:=0; MkxK[0][2]:=1;
@@ -1794,7 +1797,7 @@ begin
 
 end;
 
-procedure TForm1.MenuItem10Click(Sender: TObject);
+procedure TForm1.EscaladoLinealx2Click(Sender: TObject);
 var
   i,j : Integer;
 begin
@@ -1897,10 +1900,14 @@ begin
           i:=i+2;
   end;
 
-  StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
-  BM.SetSize(M2.ancho,M2.alto);
-  mat2bm(M2,BM);
+  SetLength(IM.M, M2.alto, M2.ancho, 3);
+  IM.alto := M2.alto;
+  IM.ancho := M2.ancho;
+  matFull(M2,IM);
+  BM.SetSize(M2.ancho, M2.alto);
+  mat2bm(IM, BM);
   Image1.Picture.Bitmap.Assign(BM);
+  StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
   //GuardarImagenConFiltroAplicado
   IMaux2.alto := BM.Height;
   IMaux2.ancho := BM.Width;
@@ -1908,7 +1915,7 @@ begin
   bm2mat(BM,IMaux2);
 end;
 
-procedure TForm1.MenuItem11Click(Sender: TObject);
+procedure TForm1.EscaladoLinealE2Click(Sender: TObject);
 var
   i,j,a,b:Integer;
 begin
@@ -1947,7 +1954,7 @@ begin
   bm2mat(BM,IMaux2);
 end;
 
-procedure TForm1.MenuItem12Click(Sender: TObject);
+procedure TForm1.EscaladoBiLix2Click(Sender: TObject);
 var
   i,j : Integer;
 begin
@@ -2045,10 +2052,14 @@ begin
           end;
      i:=i+2;
   end;
-  StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
-  BM.SetSize(M2.ancho,M2.alto);
-  mat2bm(M2,BM);
+  SetLength(IM.M, M2.alto, M2.ancho, 3);
+  IM.alto := M2.alto;
+  IM.ancho := M2.ancho;
+  matFull(M2,IM);
+  BM.SetSize(M2.ancho, M2.alto);
+  mat2bm(IM, BM);
   Image1.Picture.Bitmap.Assign(BM);
+  StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
   //GuardarImagenConFiltroAplicado
   IMaux2.alto := BM.Height;
   IMaux2.ancho := BM.Width;
@@ -2056,7 +2067,7 @@ begin
   bm2mat(BM,IMaux2);
 end;
 
-procedure TForm1.MenuItem13Click(Sender: TObject);
+procedure TForm1.EscaladoBiLiE2Click(Sender: TObject);
 var
   i,j,a,b:Integer;
 begin
@@ -2095,7 +2106,72 @@ begin
   bm2mat(BM,IMaux2);
 end;
 
-procedure TForm1.MenuItem15Click(Sender: TObject);
+procedure TForm1.EscaladoLazyLibreClick(Sender: TObject);
+var
+  P,anchot,altot,i,j,jt,it:Integer;
+  E,proi,proj:Double;
+begin
+       //GuardarImagenAntesDeAplicarFiltro
+       IMaux.alto := BM.Height;
+       IMaux.ancho := BM.Width;
+       SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+       bm2mat(BM,IMaux);
+       //Configurando formulario externo
+       Form6.Porcentaje.Visible:= true;
+       Form6.Label1.Visible:= true;
+       Form6.Izquierda.Visible:= false;
+       Form6.Derecha.Visible:= false;
+       Form6.ShowModal;
+       //Aplicando Filtro
+       P:=Form6.Porcentaje.Position;
+       E:=P/100;
+       altot:=round(IM.alto*E);
+       anchot:=round(IM.ancho*E);
+       proi:=IM.alto/(IM.alto*E);
+       proj:=IM.ancho/(IM.ancho*E);
+       SetLength(M2.M,altot,anchot,3);
+       M2.ancho:=anchot;
+       M2.alto:=altot;
+
+       for i:=0 to M2.alto-1 do
+       begin
+         for j:=0 to M2.ancho-1 do
+         begin
+            jt:=round(j*proj);
+            it:=round(i*proi);
+            if jt= IM.ancho then
+               jt:=jt-1;
+            if it= IM.alto then
+               it:=it-1;
+
+            M2.M[i][j][0]:=IM.M[it][jt][0];
+            M2.M[i][j][1]:=IM.M[it][jt][1];
+            M2.M[i][j][2]:=IM.M[it][jt][2];
+         end;
+       end;
+       SetLength(IM.M, M2.alto, M2.ancho, 3);
+       IM.alto := M2.alto;
+       IM.ancho := M2.ancho;
+       matFull(M2,IM);
+       BM.SetSize(M2.ancho, M2.alto);
+       mat2bm(IM, BM);
+       Image1.Picture.Bitmap.Assign(BM);
+       StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
+       //GuardarImagenConFiltroAplicado
+       IMaux2.alto := BM.Height;
+       IMaux2.ancho := BM.Width;
+       SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+       bm2mat(BM,IMaux2);
+       //Reiniciando formulario externo
+       Form6.Porcentaje.Visible:= false;
+       Form6.Label1.Visible:= false;
+       Form6.Izquierda.Visible:= true;
+       Form6.Derecha.Visible:= true;
+       Form6.Porcentaje.Position:=0;
+       Form6.Label1.Caption:='0';
+end;
+
+procedure TForm1.ReflexionHorizontalClick(Sender: TObject);
 var
   i,j:Integer;
 begin
@@ -2125,7 +2201,7 @@ begin
          bm2mat(BM,IMaux2);
 end;
 
-procedure TForm1.MenuItem16Click(Sender: TObject);
+procedure TForm1.ReflexionVerticalClick(Sender: TObject);
 var
   i,j:Integer;
 begin
@@ -2154,7 +2230,7 @@ begin
          bm2mat(BM,IMaux2);
 end;
 
-procedure TForm1.MenuItem17Click(Sender: TObject);
+procedure TForm1.Rotacion90gClick(Sender: TObject);
 var
     i,j : Integer;
 begin
@@ -2207,7 +2283,7 @@ begin
     bm2mat(BM,IMaux2);
 end;
 
-procedure TForm1.MenuItem18Click(Sender: TObject);
+procedure TForm1.Rotacion180gClick(Sender: TObject);
 var
   i,j:Integer;
 begin
@@ -2240,7 +2316,7 @@ begin
     bm2mat(BM,IMaux2);
 end;
 
-procedure TForm1.MenuItem8Click(Sender: TObject);
+procedure TForm1.EscaladoLazyx2Click(Sender: TObject);
 var
   i,j,a,b:Integer;
 begin
@@ -2291,7 +2367,7 @@ begin
   bm2mat(BM,IMaux2);
 end;
 
-procedure TForm1.MenuItem9Click(Sender: TObject);
+procedure TForm1.EscaladoLazyE2Click(Sender: TObject);
 var
   i,j,a,b:Integer;
 begin
@@ -2408,7 +2484,7 @@ var
        end;
        //Llenando matriz KxK
        k := 3;
-       //MKxK para horizontal/Vertical
+       //MKxK para ReflexionHorizontal/Vertical
        if (Form5.RadioButton1.Checked) then
        begin
          MkxK[0][0]:=  1; MkxK[0][1]:= -2; MkxK[0][2]:=  1;
@@ -2488,7 +2564,7 @@ var
        end;
        //Llenando matriz KxK
        k := 3;
-       //MKxK para horizontal/Vertical
+       //MKxK para ReflexionHorizontal/Vertical
        if (Form5.RadioButton1.Checked) then
        begin
          MkxK[0][0]:=  0; MkxK[0][1]:= -1; MkxK[0][2]:=  0;
@@ -2569,6 +2645,141 @@ procedure TForm1.PromedioDireccionalClick(Sender: TObject);
        bm2mat(BM,IMaux2);
        //Reiniciar Formulario Configuraciones
        Form2.SpinEdit1.Value:=3;
+end;
+
+procedure TForm1.RotacionLibreClick(Sender: TObject);
+var
+    grados: Integer;
+    radianes: Double;
+    i,j: Integer;
+    xR,yR: Double;
+    it, jt: Integer;
+    dxc,dyc :  Double;
+    ic, jc: Integer;
+    minI, minJ: Integer;
+    maxI, maxJ: Integer;
+begin
+    //GuardarImagenAntesDeAplicarFiltro
+    IMaux.alto := BM.Height;
+    IMaux.ancho := BM.Width;
+    SetLength(IMaux.M, IMaux.alto, IMaux.ancho, 3);
+    bm2mat(BM,IMaux);
+    //Configurando formulario externo
+    Form6.Porcentaje.Visible:= true;
+    Form6.Porcentaje.Max:=360;
+    Form6.Label1.Visible:= true;
+    Form6.Izquierda.Visible:= false;
+    Form6.Derecha.Visible:= false;
+    Form6.ShowModal;
+    //Aplicando Filtro
+        grados := Form6.Porcentaje.Position;
+        radianes := grados*(pi/180.0);
+
+        ic := round(IM.alto/2.0);
+        jc := round(IM.ancho/2.0);
+
+        minI := 1000;
+        minJ := 1000;
+
+        maxI := -1000;
+        maxJ := -1000;
+
+        i:=0;
+        j:=0;
+        dxc :=  jc*cos(radianes)+ ic*sin(radianes);
+        dyc :=  -jc*sin(radianes)+ ic*cos(radianes);
+        xR:= round(j*cos(radianes)+ i*sin(radianes)  + dxc);
+        yR:= round(-j*sin(radianes)+ i*cos(radianes) + dyc);
+
+        minI:= min(minI, round(yR));
+        minJ:= min(minJ, round(xR));
+        maxI:= max(maxI, round(yR));
+        maxJ:= max(maxJ, round(xR));
+
+
+        i:=0;
+        j:=IM.ancho-1;
+        dxc :=  jc*cos(radianes)+ ic*sin(radianes);
+        dyc :=  -jc*sin(radianes)+ ic*cos(radianes);
+
+        xR:= round(j*cos(radianes)+ i*sin(radianes)  + dxc);
+        yR:= round(-j*sin(radianes)+ i*cos(radianes) + dyc);
+
+        minI:= min(minI, round(yR));
+        minJ:= min(minJ, round(xR));
+        maxI:= max(maxI, round(yR));
+        maxJ:= max(maxJ, round(xR));
+
+        i:=IM.alto-1;
+        j:=0;
+        dxc :=  jc*cos(radianes)+ ic*sin(radianes);
+        dyc :=  -jc*sin(radianes)+ ic*cos(radianes);
+
+        xR:= round(j*cos(radianes)+ i*sin(radianes)  + dxc);
+        yR:= round(-j*sin(radianes)+ i*cos(radianes) + dyc);
+        minI:= min(minI, round(yR));
+        minJ:= min(minJ, round(xR));
+        maxI:= max(maxI, round(yR));
+        maxJ:= max(maxJ, round(xR));
+
+        i:=IM.alto-1;
+        j:=IM.ancho-1;
+        dxc :=  jc*cos(radianes)+ ic*sin(radianes);
+        dyc :=  -jc*sin(radianes)+ ic*cos(radianes);
+
+        xR:= round(j*cos(radianes)+ i*sin(radianes)  + dxc);
+        yR:= round(-j*sin(radianes)+ i*cos(radianes) + dyc);
+        minI:= round(min(minI, round(yR)));
+        minJ:= round(min(minJ, round(xR)));
+        maxI:= round(max(maxI, round(yR)));
+        maxJ:= round(max(maxJ, round(xR)));
+
+        M2.alto:=(maxI-minI)+1;
+        M2.ancho:=(maxJ-minJ)+1;
+        SetLength(M2.M, M2.alto, M2.ancho, 3);
+
+        for i:=0 to IM.alto-1 do
+        begin
+            for j:=0 to IM.ancho-1 do
+            begin
+
+              dxc :=  jc*cos(radianes)+ ic*sin(radianes);
+              dyc :=  -jc*sin(radianes)+ ic*cos(radianes);
+
+              xR:= round(j*cos(radianes)+ i*sin(radianes)  + dxc);
+              yR:= round(-j*sin(radianes)+ i*cos(radianes) + dyc);
+
+              jt:= round(xR)-minJ;
+              it:= round(yR)-minI;
+
+              if (0<=it)  and (it<M2.alto-1) and (0<=jt)  and (jt<M2.ancho-1) then
+              begin
+                M2.M[it][jt][0] := IM.M[i][j][0];
+                M2.M[it][jt][1] := IM.M[i][j][1];
+                M2.M[it][jt][2] := IM.M[i][j][2];
+              end;
+            end;
+        end;
+        SetLength(IM.M, M2.alto, M2.ancho, 3);
+        IM.alto := M2.alto;
+        IM.ancho := M2.ancho;
+        matFull(M2,IM);
+        BM.SetSize(M2.ancho, M2.alto);
+        mat2bm(IM, BM);
+        Image1.Picture.Bitmap.Assign(BM);
+        StatusBar1.Panels[0].Text := IntToStr(M2.ancho) + 'x' + IntToStr(M2.alto) + 'pixeles';
+        //GuardarImagenConFiltroAplicado
+        IMaux2.alto := BM.Height;
+        IMaux2.ancho := BM.Width;
+        SetLength(IMaux2.M, IMaux2.alto, IMaux2.ancho, 3);
+        bm2mat(BM,IMaux2);
+        //Reiniciando formulario externo
+        Form6.Porcentaje.Visible:= false;
+        Form6.Label1.Visible:= false;
+        Form6.Izquierda.Visible:= true;
+        Form6.Derecha.Visible:= true;
+        Form6.Porcentaje.Position:=0;
+        Form6.Label1.Caption:='0';
 end;
 
 procedure TForm1.SepiaClick(Sender: TObject);

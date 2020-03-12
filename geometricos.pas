@@ -5,7 +5,7 @@ unit Geometricos;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls;
 
 type
 
@@ -16,10 +16,13 @@ type
     Cancelar: TButton;
     Izquierda: TRadioButton;
     Derecha: TRadioButton;
+    Label1: TLabel;
+    Porcentaje: TTrackBar;
     procedure AceptarClick(Sender: TObject);
     procedure CancelarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure DerechaChange(Sender: TObject);
+    procedure PorcentajeChange(Sender: TObject);
   private
 
   public
@@ -38,6 +41,11 @@ implementation
 procedure TForm6.DerechaChange(Sender: TObject);
 begin
 
+end;
+
+procedure TForm6.PorcentajeChange(Sender: TObject);
+begin
+  Form6.Label1.Caption:= IntToStr(Porcentaje.Position);
 end;
 
 procedure TForm6.FormCreate(Sender: TObject);

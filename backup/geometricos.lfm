@@ -1,15 +1,15 @@
 object Form6: TForm6
-  Left = 630
-  Height = 131
-  Top = 247
-  Width = 215
+  Left = 825
+  Height = 173
+  Top = 453
+  Width = 270
   Caption = 'Form6'
-  ClientHeight = 131
-  ClientWidth = 215
+  ClientHeight = 173
+  ClientWidth = 270
   OnCreate = FormCreate
   LCLVersion = '2.0.6.0'
   object Izquierda: TRadioButton
-    Left = 72
+    Left = 64
     Height = 19
     Top = 8
     Width = 68
@@ -17,9 +17,9 @@ object Form6: TForm6
     TabOrder = 0
   end
   object Derecha: TRadioButton
-    Left = 72
+    Left = 152
     Height = 19
-    Top = 40
+    Top = 8
     Width = 63
     Caption = 'Derecha'
     OnChange = DerechaChange
@@ -42,5 +42,25 @@ object Form6: TForm6
     Caption = 'Cancelar'
     OnClick = CancelarClick
     TabOrder = 3
+  end
+  object Porcentaje: TTrackBar
+    Left = 80
+    Height = 25
+    Top = 48
+    Width = 100
+    Max = 100
+    OnChange = PorcentajeChange
+    Position = 0
+    TabOrder = 4
+    Visible = False
+  end
+  object Label1: TLabel
+    Left = 32
+    Height = 15
+    Top = 48
+    Width = 6
+    Caption = '0'
+    ParentColor = False
+    Visible = False
   end
 end
